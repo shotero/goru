@@ -72,6 +72,20 @@ def test_qemu_install_maps_iso_and_disk() -> None:
     ]
 
 
+def test_nmap_service_maps_to_native_args() -> None:
+    plugin = REGISTRY["nmap"]
+    assert plugin.build_args(
+        ["service", "scanme.nmap.org", "--ports", "22,80,443", "--skip-discovery", "--output-xml", "scan.xml"],
+        {},
+    ) == ["-sV", "-Pn", "-p", "22,80,443", "-oX", "scan.xml", "scanme.nmap.org"]
+
+
+def test_nmap_scripts_requires_script() -> None:
+    plugin = REGISTRY["nmap"]
+    with pytest.raises(ValueError, match="nmap scripts requires --script"):
+        plugin.build_args(["scripts", "scanme.nmap.org"], {})
+
+
 def test_rsync_translates_native_to_wrapper() -> None:
     plugin = REGISTRY["rsync"]
     assert plugin.translate_native_args(["-az", "--exclude", "*.tmp", "src/", "dest/"]) == [
@@ -149,4 +163,17 @@ def test_qemu_translates_native_to_wrapper_with_arch() -> None:
         "riscv64",
         "--memory",
         "1G",
+    ]
+
+
+def test_nmap_translates_native_to_wrapper_from_spec_mappings() -> None:
+    plugin = REGISTRY["nmap"]
+    assert plugin.translate_native_args(["-sV", "-p", "22,80", "-T4", "--open", "scanme.nmap.org"]) == [
+        "service",
+        "scanme.nmap.org",
+        "--ports",
+        "22,80",
+        "--timing",
+        "4",
+        "--open",
     ]

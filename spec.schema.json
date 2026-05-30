@@ -172,6 +172,7 @@
             "single_source",
             "single_image",
             "sources_destination",
+            "targets",
             "tar_paths"
           ]
         },

@@ -1,0 +1,427 @@
+$schema: ../../spec.schema.json
+schema_version: 1
+tool:
+  name: nmap
+  binary: nmap
+  summary: Standardized Nmap wrapper for host discovery, port scans, service detection, scripts, and scan output.
+  raw_help_command:
+  - --help
+native:
+  usage:
+  - nmap [Scan Type(s)] [Options] {target specification}
+  options:
+  - flag: -sL
+    argument: false
+    description: List scan; list targets without scanning ports.
+  - flag: -sn
+    argument: false
+    description: Host discovery only; disable port scan.
+  - flag: -Pn
+    argument: false
+    description: Treat all hosts as online and skip host discovery.
+  - flag: -sS
+    argument: false
+    description: TCP SYN scan.
+  - flag: -sT
+    argument: false
+    description: TCP connect scan.
+  - flag: -sU
+    argument: false
+    description: UDP scan.
+  - flag: -sV
+    argument: false
+    description: Probe open ports for service and version details.
+  - flag: -O
+    argument: false
+    description: Enable OS detection.
+  - flag: -A
+    argument: false
+    description: Enable OS detection, version detection, scripts, and traceroute.
+  - flag: -sC
+    argument: false
+    description: Run the default NSE script set.
+  - flag: --script
+    argument: scripts
+    description: Run script files, directories, or categories.
+  - flag: --script-args
+    argument: args
+    description: Arguments for NSE scripts.
+  - flag: -p
+    argument: ports
+    description: Port ranges to scan.
+  - flag: --exclude-ports
+    argument: ports
+    description: Port ranges to exclude.
+  - flag: -F
+    argument: false
+    description: Fast mode; scan fewer ports.
+  - flag: -r
+    argument: false
+    description: Scan ports sequentially.
+  - flag: --top-ports
+    argument: count
+    description: Scan the most common ports.
+  - flag: -iL
+    argument: file
+    description: Read targets from a file.
+  - flag: -iR
+    argument: count
+    description: Choose random targets.
+  - flag: --exclude
+    argument: targets
+    description: Exclude comma-separated hosts or networks.
+  - flag: --excludefile
+    argument: file
+    description: Exclude hosts listed in a file.
+  - flag: -n
+    argument: false
+    description: Never do DNS resolution.
+  - flag: -R
+    argument: false
+    description: Always do DNS resolution.
+  - flag: --dns-servers
+    argument: servers
+    description: Use custom DNS servers.
+  - flag: --traceroute
+    argument: false
+    description: Trace hop path to each host.
+  - flag: -T
+    argument: template
+    description: Timing template from 0 to 5.
+  - flag: --max-retries
+    argument: tries
+    description: Cap probe retransmissions.
+  - flag: --host-timeout
+    argument: time
+    description: Give up on a target after this long.
+  - flag: --min-rate
+    argument: rate
+    description: Send packets no slower than this rate.
+  - flag: --max-rate
+    argument: rate
+    description: Send packets no faster than this rate.
+  - flag: -oA
+    argument: basename
+    description: Output normal, XML, and grepable formats.
+  - flag: -oN
+    argument: file
+    description: Output normal format.
+  - flag: -oX
+    argument: file
+    description: Output XML format.
+  - flag: -oG
+    argument: file
+    description: Output grepable format.
+  - flag: --open
+    argument: false
+    description: Show only open or possibly open ports.
+  - flag: --reason
+    argument: false
+    description: Show why each port is in its state.
+  - flag: -v
+    argument: false
+    description: Increase verbosity.
+  - flag: --packet-trace
+    argument: false
+    description: Show packets sent and received.
+  - flag: '-6'
+    argument: false
+    description: Enable IPv6 scanning.
+  - flag: -h
+    argument: false
+    description: Show help.
+  - flag: -V
+    argument: false
+    description: Show version.
+  option_groups:
+  - name: Scan types
+    summary: Select list, host discovery, TCP, UDP, service, OS, aggressive, or script scans.
+    flags:
+    - -sL
+    - -sn
+    - -sS
+    - -sT
+    - -sU
+    - -sV
+    - -O
+    - -A
+    - -sC
+    - --script
+  - name: Targeting and discovery
+    summary: Read target lists, skip discovery, control DNS, exclude hosts, and trace routes.
+    flags:
+    - -iL
+    - -iR
+    - -Pn
+    - --exclude
+    - --excludefile
+    - -n
+    - -R
+    - --dns-servers
+    - --traceroute
+  - name: Ports and timing
+    summary: Choose ports, scan order, common-port shortcuts, timing templates, retries, and packet rates.
+    flags:
+    - -p
+    - --exclude-ports
+    - -F
+    - -r
+    - --top-ports
+    - -T
+    - --max-retries
+    - --host-timeout
+    - --min-rate
+    - --max-rate
+  - name: Output
+    summary: Write scan output, show only open ports, explain states, and increase diagnostics.
+    flags:
+    - -oA
+    - -oN
+    - -oX
+    - -oG
+    - --open
+    - --reason
+    - -v
+    - --packet-trace
+wrapper:
+  usage:
+  - goru run nmap scan <target...> [options] [-- native-nmap-options...]
+  - goru run nmap hosts <target...> [options] [-- native-nmap-options...]
+  - goru run nmap tcp <target...> [options] [-- native-nmap-options...]
+  - goru run nmap udp <target...> [options] [-- native-nmap-options...]
+  - goru run nmap service <target...> [options] [-- native-nmap-options...]
+  - goru run nmap scripts <target...> --script <name> [options] [-- native-nmap-options...]
+  - goru run nmap raw <native-args...>
+  option_groups:
+  - name: Targeting
+    options:
+    - flag: --input-file
+      key: input_file
+      argument: file
+      native: -iL
+      description: Read targets from a file.
+    - flag: --random-targets
+      key: random_targets
+      argument: count
+      native: -iR
+      description: Choose this many random targets.
+    - flag: --exclude
+      key: exclude
+      argument: targets
+      native: --exclude
+      description: Exclude comma-separated hosts or networks.
+    - flag: --exclude-file
+      key: exclude_file
+      argument: file
+      native: --excludefile
+      description: Exclude hosts listed in a file.
+    - flag: --skip-discovery
+      key: skip_discovery
+      argument: false
+      native: -Pn
+      description: Treat all hosts as online and skip host discovery.
+    - flag: --ipv6
+      key: ipv6
+      argument: false
+      native: '-6'
+      description: Enable IPv6 scanning.
+  - name: Ports
+    options:
+    - flag: --ports
+      key: ports
+      argument: ports
+      native: -p
+      description: Port ranges to scan, such as 22,80,443 or 1-65535.
+    - flag: --exclude-ports
+      key: exclude_ports
+      argument: ports
+      native: --exclude-ports
+      description: Port ranges to exclude.
+    - flag: --fast
+      key: fast
+      argument: false
+      native: -F
+      description: Fast mode; scan fewer ports.
+    - flag: --sequential
+      key: sequential
+      argument: false
+      native: -r
+      description: Scan ports sequentially.
+    - flag: --top-ports
+      key: top_ports
+      argument: count
+      native: --top-ports
+      description: Scan this many common ports.
+  - name: Detection
+    options:
+    - flag: --script
+      key: script
+      argument: scripts
+      repeatable: true
+      native: --script
+      description: Run script files, directories, or categories. May be repeated.
+    - flag: --script-args
+      key: script_args
+      argument: args
+      native: --script-args
+      description: Arguments for NSE scripts.
+  - name: Discovery and DNS
+    options:
+    - flag: --no-dns
+      key: no_dns
+      argument: false
+      native: -n
+      description: Never do DNS resolution.
+    - flag: --always-dns
+      key: always_dns
+      argument: false
+      native: -R
+      description: Always do DNS resolution.
+    - flag: --dns-servers
+      key: dns_servers
+      argument: servers
+      native: --dns-servers
+      description: Use custom DNS servers.
+    - flag: --traceroute
+      key: traceroute
+      argument: false
+      native: --traceroute
+      description: Trace hop path to each host.
+  - name: Timing
+    options:
+    - flag: --timing
+      key: timing
+      argument: 0-5
+      native: -T
+      description: Timing template from 0 to 5.
+    - flag: --max-retries
+      key: max_retries
+      argument: tries
+      native: --max-retries
+      description: Cap probe retransmissions.
+    - flag: --host-timeout
+      key: host_timeout
+      argument: time
+      native: --host-timeout
+      description: Give up on each target after this long.
+    - flag: --min-rate
+      key: min_rate
+      argument: rate
+      native: --min-rate
+      description: Send packets no slower than this rate.
+    - flag: --max-rate
+      key: max_rate
+      argument: rate
+      native: --max-rate
+      description: Send packets no faster than this rate.
+  - name: Output
+    options:
+    - flag: --output-all
+      key: output_all
+      argument: basename
+      native: -oA
+      description: Output normal, XML, and grepable formats with this basename.
+    - flag: --output-normal
+      key: output_normal
+      argument: file
+      native: -oN
+      description: Write normal output to a file.
+    - flag: --output-xml
+      key: output_xml
+      argument: file
+      native: -oX
+      description: Write XML output to a file.
+    - flag: --output-grepable
+      key: output_grepable
+      argument: file
+      native: -oG
+      description: Write grepable output to a file.
+    - flag: --open
+      key: open
+      argument: false
+      native: --open
+      description: Show only open or possibly open ports.
+    - flag: --reason
+      key: reason
+      argument: false
+      native: --reason
+      description: Show why each port is in its state.
+    - flag: --verbose
+      key: verbose
+      argument: false
+      native: -v
+      description: Increase verbosity.
+    - flag: --packet-trace
+      key: packet_trace
+      argument: false
+      native: --packet-trace
+      description: Show packets sent and received.
+  subcommands:
+  - name: scan
+    usage: scan <target...> [options]
+    description: Run a standard Nmap scan.
+    positional: targets
+  - name: list
+    usage: list <target...> [options]
+    description: List targets without scanning ports.
+    positional: targets
+    native_args:
+    - -sL
+  - name: hosts
+    usage: hosts <target...> [options]
+    description: Discover live hosts without scanning ports.
+    positional: targets
+    native_args:
+    - -sn
+  - name: tcp
+    usage: tcp <target...> [options]
+    description: Run a TCP SYN scan.
+    positional: targets
+    native_args:
+    - -sS
+  - name: connect
+    usage: connect <target...> [options]
+    description: Run a TCP connect scan.
+    positional: targets
+    native_args:
+    - -sT
+  - name: udp
+    usage: udp <target...> [options]
+    description: Run a UDP scan.
+    positional: targets
+    native_args:
+    - -sU
+  - name: service
+    usage: service <target...> [options]
+    description: Detect service and version details on open ports.
+    positional: targets
+    native_args:
+    - -sV
+  - name: os
+    usage: os <target...> [options]
+    description: Detect target operating systems.
+    positional: targets
+    native_args:
+    - -O
+  - name: aggressive
+    usage: aggressive <target...> [options]
+    description: Enable OS detection, version detection, scripts, and traceroute.
+    positional: targets
+    native_args:
+    - -A
+  - name: default-scripts
+    usage: default-scripts <target...> [options]
+    description: Run Nmap's default NSE scripts.
+    positional: targets
+    native_args:
+    - -sC
+  - name: scripts
+    usage: scripts <target...> --script <scripts> [options]
+    description: Run selected NSE scripts, script files, directories, or categories.
+    positional: targets
+    required:
+    - script
+  - name: raw
+    usage: raw <native-args...>
+    description: Run nmap directly with native arguments and no wrapper remapping.
+    positional: raw

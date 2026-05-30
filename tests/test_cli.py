@@ -15,6 +15,7 @@ def test_validate_specs_command() -> None:
     assert "valid tar tools/tar/spec.yaml" in result.output
     assert "valid tshark tools/tshark/spec.yaml" in result.output
     assert "valid qemu tools/qemu/spec.yaml" in result.output
+    assert "valid nmap tools/nmap/spec.yaml" in result.output
 
 
 def test_help_includes_native_flag_groups() -> None:
@@ -84,3 +85,9 @@ def test_translate_native_qemu_to_wrapper() -> None:
     result = run_cli("translate", "qemu-system-aarch64 -m 2G -smp 4 -drive file=vm.qcow2,if=virtio -nographic")
     assert result.exit_code == 0
     assert result.output.strip() == "./goru run qemu boot vm.qcow2 --arch aarch64 --memory 2G --cpus 4 --headless"
+
+
+def test_translate_native_nmap_to_wrapper() -> None:
+    result = run_cli("translate", "nmap -sV -p 22,80 --open scanme.nmap.org")
+    assert result.exit_code == 0
+    assert result.output.strip() == "./goru run nmap service scanme.nmap.org --ports 22,80 --open"
