@@ -144,6 +144,44 @@ def render_help(plugin) -> dict[str, Any]:
     }
 
 
+def subcommand_index(plugin) -> dict[str, dict[str, Any]]:
+    return {
+        str(subcommand["name"]): subcommand
+        for subcommand in mapped_tool(plugin).get("subcommands", [])
+        if subcommand.get("name")
+    }
+
+
+def render_subcommand_help(plugin, subcommand_name: str) -> dict[str, Any]:
+    subcommands = subcommand_index(plugin)
+    subcommand = subcommands.get(subcommand_name)
+    if not subcommand:
+        known = ", ".join(sorted(subcommands))
+        raise ValueError(f"unknown {plugin.name} subcommand: {subcommand_name}. Known subcommands: {known}")
+
+    usage_line = subcommand["usage"]
+    if not usage_line.startswith("goru "):
+        usage_line = f"goru run {tool_metadata(plugin).get('name', plugin.name)} {usage_line}"
+
+    required_keys = set(subcommand.get("required", []))
+    required_options = [
+        option
+        for option in flatten_option_groups(mapped_tool(plugin))
+        if option.get("key") in required_keys
+    ]
+
+    return {
+        "tool": tool_metadata(plugin).get("name", plugin.name),
+        "binary": tool_metadata(plugin).get("binary", plugin.binary),
+        "subcommand": subcommand_name,
+        "description": subcommand["description"],
+        "usage": [usage_line],
+        "required_options": required_options,
+        "option_groups": mapped_tool(plugin).get("option_groups", []),
+        "subcommand_metadata": subcommand,
+    }
+
+
 def print_help(plugin) -> None:
     help_doc = render_help(plugin)
     console.print(f"[bold cyan]{help_doc['tool']}[/bold cyan]: wrapper for [green]{help_doc['binary']}[/green]")
@@ -181,6 +219,35 @@ def print_help(plugin) -> None:
         )
         for group in help_doc["native_option_groups"]:
             print_native_flag_group(group["name"], group["summary"], group.get("flags", []))
+
+
+def print_subcommand_help(plugin, subcommand_name: str) -> None:
+    help_doc = render_subcommand_help(plugin, subcommand_name)
+    console.print(
+        f"[bold cyan]{help_doc['tool']} {help_doc['subcommand']}[/bold cyan]: "
+        f"wrapper subcommand for [green]{help_doc['binary']}[/green]"
+    )
+    console.print(help_doc["description"], style="dim")
+    console.print("")
+    console.print("Usage", style="bold")
+    for line in help_doc["usage"]:
+        print_wrapped_line(line, indent=2, style="bold")
+
+    if help_doc["required_options"]:
+        console.print("")
+        console.print("Required options", style="bold")
+        for option in help_doc["required_options"]:
+            argument = f" {option['argument']}" if option.get("argument") else ""
+            print_help_row(f"{option['flag']}{argument}", option["description"], "green")
+
+    if help_doc["option_groups"]:
+        console.print("")
+        console.print("Options", style="bold")
+        for group in help_doc["option_groups"]:
+            console.print(f"  {group['name']}:", style="bold")
+            for option in group.get("options", []):
+                argument = f" {option['argument']}" if option.get("argument") else ""
+                print_help_row(f"{option['flag']}{argument}", option["description"], "green")
 
 
 def print_help_row(term: str, description: str, style: str) -> None:
@@ -435,6 +502,13 @@ def cmd_run(tool_name: str, args: tuple[str, ...], config_path: str | None, outp
         else:
             print_help(plugin)
         return
+    subcommand_help = requested_subcommand_help(args)
+    if subcommand_help:
+        if output_format != "text":
+            print_structured(render_subcommand_help(plugin, subcommand_help), output_format)
+        else:
+            print_subcommand_help(plugin, subcommand_help)
+        return
     if args == ("--raw-help",):
         cmd_raw_help(plugin, output_format)
         return
@@ -473,6 +547,15 @@ def restore_passthrough_marker(tool_name: str, args: tuple[str, ...]) -> tuple[s
         if token == "run" and index + 1 < len(raw) and raw[index + 1] == tool_name:
             return tuple(raw[index + 2 :])
     return args
+
+
+def requested_subcommand_help(args: tuple[str, ...]) -> str | None:
+    if not args or args[0].startswith("-"):
+        return None
+    wrapper_args = args[: args.index("--")] if "--" in args else args
+    if any(arg in {"--help", "-h"} for arg in wrapper_args[1:]):
+        return args[0]
+    return None
 
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]})

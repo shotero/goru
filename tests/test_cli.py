@@ -26,6 +26,25 @@ def test_help_includes_native_flag_groups() -> None:
     assert "Flags: -4, -6, -B, -b, -J, -l, -p" in result.output
 
 
+def test_run_subcommand_help() -> None:
+    result = run_cli("run", "qemu", "boot", "--help")
+    assert result.exit_code == 0
+    assert "qemu boot" in result.output
+    assert "Usage" in result.output
+    assert "goru run qemu boot <image> --arch <arch> [options]" in result.output
+    assert "Boot a disk image with sane drive defaults." in result.output
+    assert "Required options" in result.output
+    assert "--disk image" in result.output
+
+
+def test_yaml_run_subcommand_help() -> None:
+    result = run_cli("--yaml", "run", "qemu", "boot", "--help")
+    assert result.exit_code == 0
+    assert "tool: qemu" in result.output
+    assert "subcommand: boot" in result.output
+    assert "goru run qemu boot <image> --arch <arch> [options]" in result.output
+
+
 def test_translate_native_rsync_to_wrapper() -> None:
     result = run_cli("translate", "rsync -az --exclude '*.tmp' src/ dest/")
     assert result.exit_code == 0
