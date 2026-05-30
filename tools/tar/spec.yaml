@@ -1,0 +1,180 @@
+$schema: ../../spec.schema.json
+schema_version: 1
+tool:
+  name: tar
+  binary: tar
+  summary: Standardized tar wrapper for creating, extracting, and listing archives.
+  raw_help_command:
+  - --help
+native:
+  usage:
+  - 'tar(bsdtar): manipulate archive files'
+  - 'First option must be a mode specifier: -c Create, -r Add/Replace, -t List, -u
+    Update, -x Extract'
+  - 'Create: tar -c [options] [<file> | <dir> | @<archive> | -C <dir> ]'
+  - 'List: tar -t [options] [<patterns>]'
+  - 'Extract: tar -x [options] [<patterns>]'
+  options:
+  - flag: -c
+    argument: false
+    description: Create archive
+  - flag: -r
+    argument: false
+    description: Add/Replace in archive
+  - flag: -t
+    argument: false
+    description: List archive contents
+  - flag: -u
+    argument: false
+    description: Update archive
+  - flag: -x
+    argument: false
+    description: Extract archive
+  - flag: -b
+    argument: '#'
+    description: 'Use # 512-byte records per I/O block'
+  - flag: -f
+    argument: <filename>
+    description: Location of archive
+  - flag: -v
+    argument: false
+    description: Verbose
+  - flag: -w
+    argument: false
+    description: Interactive
+  - flag: -z
+    argument: false
+    description: Compress archive with gzip
+  - flag: -j
+    argument: false
+    description: Compress archive with bzip2
+  - flag: -J
+    argument: false
+    description: Compress archive with xz
+  - flag: --lzma
+    argument: false
+    description: Compress archive with lzma
+  - flag: --format
+    argument: '{ustar|pax|cpio|shar}'
+    description: Select archive format
+  - flag: --exclude
+    argument: <pattern>
+    description: Skip files that match pattern
+  - flag: -C
+    argument: <dir>
+    description: Change to directory before processing remaining files
+  - flag: '@<archive>'
+    argument: false
+    description: Add entries from archive to output
+  - flag: -k
+    argument: false
+    description: Keep existing files when extracting
+  - flag: -m
+    argument: false
+    description: Do not restore modification times
+  - flag: -O
+    argument: false
+    description: Write entries to stdout, don't restore to disk
+  - flag: -p
+    argument: false
+    description: Restore permissions, ACLs, owner, and file flags
+  version: bsdtar 3.5.3 - libarchive 3.7.4 zlib/1.2.12 liblzma/5.4.3 bz2lib/1.0.8
+  option_groups:
+  - name: Modes
+    summary: 'Choose the archive operation: create, append/update, list, or extract.'
+    flags:
+    - -c
+    - -r
+    - -t
+    - -u
+    - -x
+  - name: Archive location
+    summary: Select the archive file and working directory.
+    flags:
+    - -f
+    - -C
+    - '@<archive>'
+  - name: Compression and format
+    summary: Choose compression and archive format.
+    flags:
+    - -z
+    - -j
+    - -J
+    - --lzma
+    - --format
+  - name: Selection and extraction
+    summary: Filter paths and control overwrite, metadata, and stdout extraction behavior.
+    flags:
+    - --exclude
+    - -k
+    - -m
+    - -O
+    - -p
+  - name: Output and interaction
+    summary: Control verbosity, prompts, and block size.
+    flags:
+    - -b
+    - -v
+    - -w
+wrapper:
+  usage:
+  - goru run tar create --file <archive> [paths...] [options] [-- native-tar-options...]
+  - goru run tar extract --file <archive> [paths...] [options] [-- native-tar-options...]
+  - goru run tar list --file <archive> [paths...] [options] [-- native-tar-options...]
+  - goru run tar raw <native-args...>
+  option_groups:
+  - name: Archive
+    options:
+    - flag: --file
+      key: file
+      argument: path
+      native: -f
+      description: Archive file path.
+    - flag: --directory
+      key: directory
+      argument: path
+      native: -C
+      description: Change directory before processing files.
+  - name: Compression
+    options:
+    - flag: --compress
+      key: compress
+      argument: kind
+      native: template
+      description: 'Compression: gzip, bzip2, xz, or lzma.'
+  - name: Output
+    options:
+    - flag: --verbose
+      key: verbose
+      argument: false
+      native: -v
+      description: Increase verbosity.
+  subcommands:
+  - name: create
+    usage: create --file <archive> [paths...]
+    description: Create an archive.
+    positional: tar_paths
+    set:
+      mode: create
+    native_args:
+    - -c
+  - name: extract
+    usage: extract --file <archive> [paths...]
+    description: Extract an archive.
+    positional: tar_paths
+    set:
+      mode: extract
+    native_args:
+    - -x
+  - name: list
+    usage: list --file <archive> [paths...]
+    description: List archive contents.
+    positional: tar_paths
+    set:
+      mode: list
+    native_args:
+    - -t
+  - name: raw
+    usage: raw <native-args...>
+    description: Run tar directly with native arguments and no wrapper remapping.
+    positional: raw

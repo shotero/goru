@@ -1,0 +1,374 @@
+$schema: ../../spec.schema.json
+schema_version: 1
+tool:
+  name: tshark
+  binary: tshark
+  summary: Standardized TShark wrapper for packet capture and pcap inspection.
+  raw_help_command:
+  - -h
+native:
+  usage:
+  - tshark [options] ...
+  options:
+  - flag: -i
+    argument: interface
+    description: Name or index of capture interface.
+  - flag: --interface
+    argument: interface
+  - flag: -f
+    argument: capture_filter
+    description: Capture filter in libpcap syntax.
+  - flag: -s
+    argument: snaplen
+  - flag: --snapshot-length
+    argument: snaplen
+  - flag: -p
+    argument: false
+  - flag: --no-promiscuous-mode
+    argument: false
+  - flag: -I
+    argument: false
+  - flag: --monitor-mode
+    argument: false
+  - flag: -B
+    argument: buffer_size
+  - flag: --buffer-size
+    argument: buffer_size
+  - flag: -y
+    argument: link_type
+  - flag: --linktype
+    argument: link_type
+  - flag: --time-stamp-type
+    argument: type
+  - flag: -D
+    argument: false
+  - flag: --list-interfaces
+    argument: false
+  - flag: -L
+    argument: false
+  - flag: --list-data-link-types
+    argument: false
+  - flag: --list-time-stamp-types
+    argument: false
+  - flag: -c
+    argument: packet_count
+  - flag: -a
+    argument: autostop_condition
+  - flag: --autostop
+    argument: autostop_condition
+  - flag: -b
+    argument: ringbuffer_option
+  - flag: --ring-buffer
+    argument: ringbuffer_option
+  - flag: -r
+    argument: infile
+  - flag: --read-file
+    argument: infile
+  - flag: '-2'
+    argument: false
+  - flag: -M
+    argument: packet_count
+  - flag: -R
+    argument: read_filter
+  - flag: --read-filter
+    argument: read_filter
+  - flag: -Y
+    argument: display_filter
+  - flag: --display-filter
+    argument: display_filter
+  - flag: -n
+    argument: false
+  - flag: -N
+    argument: name_resolve_flags
+  - flag: -d
+    argument: decode_as
+  - flag: -H
+    argument: hosts_file
+  - flag: --enable-protocol
+    argument: proto_name
+  - flag: --disable-protocol
+    argument: proto_name
+  - flag: --only-protocols
+    argument: protocols
+  - flag: --disable-all-protocols
+    argument: false
+  - flag: --enable-heuristic
+    argument: short_name
+  - flag: --disable-heuristic
+    argument: short_name
+  - flag: -w
+    argument: outfile
+  - flag: --capture-comment
+    argument: comment
+  - flag: -C
+    argument: config_profile
+  - flag: --global-profile
+    argument: false
+  - flag: -F
+    argument: output_file_type
+  - flag: -V
+    argument: false
+  - flag: -O
+    argument: protocols
+  - flag: -P
+    argument: false
+  - flag: --print
+    argument: false
+  - flag: -S
+    argument: separator
+  - flag: -x
+    argument: false
+  - flag: --hexdump
+    argument: hexoption
+  - flag: -T
+    argument: output_format
+  - flag: -j
+    argument: protocolfilter
+  - flag: -J
+    argument: protocolfilter
+  - flag: -e
+    argument: field
+  - flag: -E
+    argument: fieldsoption=value
+  - flag: -t
+    argument: timestamp_format
+  - flag: -u
+    argument: seconds_format
+  - flag: -l
+    argument: false
+  - flag: -q
+    argument: false
+  - flag: -Q
+    argument: false
+  - flag: -g
+    argument: false
+  - flag: -W
+    argument: extra_info
+  - flag: -X
+    argument: key:value
+  - flag: -U
+    argument: tap_name
+  - flag: -z
+    argument: statistics
+  - flag: --export-objects
+    argument: protocol,destdir
+  - flag: --export-tls-session-keys
+    argument: keyfile
+  - flag: --color
+    argument: false
+  - flag: --no-duplicate-keys
+    argument: false
+  - flag: --temp-dir
+    argument: directory
+  - flag: --compress
+    argument: type
+  - flag: --log-level
+    argument: level
+  - flag: --log-file
+    argument: path
+  - flag: -h
+    argument: false
+  - flag: --help
+    argument: false
+  - flag: -v
+    argument: false
+  - flag: --version
+    argument: false
+  - flag: -o
+    argument: name:value
+  - flag: -K
+    argument: keytab
+  - flag: -G
+    argument: report
+  option_groups:
+  - name: Capture input
+    summary: Select live interfaces, capture filters, packet limits, and capture modes.
+    flags:
+    - -i
+    - -f
+    - -c
+    - -s
+    - -p
+    - -I
+    - -B
+    - -y
+    - -a
+    - -b
+  - name: File input and processing
+    summary: Read pcap files and apply display, read, protocol, and decode controls.
+    flags:
+    - -r
+    - '-2'
+    - -R
+    - -Y
+    - -n
+    - -N
+    - -d
+    - --enable-protocol
+    - --disable-protocol
+  - name: Output formats
+    summary: Control packet output, packet details, field extraction, hex dumps, and timestamps.
+    flags:
+    - -T
+    - -e
+    - -E
+    - -V
+    - -O
+    - -x
+    - -t
+    - -u
+    - -l
+    - -q
+  - name: Capture files
+    summary: Write captures, choose file types, comments, compression, and metadata.
+    flags:
+    - -w
+    - -F
+    - -P
+    - -g
+    - -W
+    - --capture-comment
+    - --compress
+  - name: Discovery and diagnostics
+    summary: List interfaces, reports, versions, help, and diagnostic logging.
+    flags:
+    - -D
+    - -L
+    - -G
+    - -h
+    - -v
+    - --log-level
+    - --log-file
+wrapper:
+  usage:
+  - goru run tshark capture [options] [-- native-tshark-options...]
+  - goru run tshark read <file> [options] [-- native-tshark-options...]
+  - goru run tshark fields <file> --field <name>... [options] [-- native-tshark-options...]
+  - goru run tshark interfaces
+  - goru run tshark reports [report]
+  - goru run tshark raw <native-args...>
+  option_groups:
+  - name: Input
+    options:
+    - flag: --interface
+      key: interface
+      argument: name
+      native: -i
+      description: Capture interface name or index.
+    - flag: --input
+      key: input
+      argument: file
+      native: -r
+      description: Input capture file for read and fields.
+    - flag: --capture-filter
+      key: capture_filter
+      argument: filter
+      native: -f
+      description: Capture filter in libpcap syntax.
+    - flag: --display-filter
+      key: display_filter
+      argument: filter
+      native: -Y
+      description: Display filter in Wireshark syntax.
+    - flag: --read-filter
+      key: read_filter
+      argument: filter
+      native: -R
+      description: Read filter in Wireshark syntax. Enables two-pass analysis.
+  - name: Capture control
+    options:
+    - flag: --count
+      key: count
+      argument: packets
+      native: -c
+      description: Stop after this many packets.
+    - flag: --duration
+      key: duration
+      argument: seconds
+      native: template
+      description: Stop after this many seconds.
+    - flag: --write
+      key: write
+      argument: file
+      native: -w
+      description: Write packets to a capture file.
+    - flag: --no-promiscuous
+      key: no_promiscuous
+      argument: false
+      native: -p
+      description: Do not capture in promiscuous mode.
+  - name: Output
+    options:
+    - flag: --format
+      key: format
+      argument: format
+      native: -T
+      description: Output format, such as text, json, fields, or pdml.
+    - flag: --field
+      key: field
+      argument: name
+      repeatable: true
+      native: -e
+      description: Field to print when using fields output. May be repeated.
+    - flag: --field-option
+      key: field_option
+      argument: key=value
+      repeatable: true
+      native: -E
+      description: Field output option, such as header=y or separator=,.
+    - flag: --details
+      key: details
+      argument: false
+      native: -V
+      description: Print packet details.
+    - flag: --hex
+      key: hex
+      argument: false
+      native: -x
+      description: Print packet bytes as hex and ASCII.
+    - flag: --quiet
+      key: quiet
+      argument: false
+      native: -q
+      description: Reduce stdout noise.
+    - flag: --no-name-resolution
+      key: no_name_resolution
+      argument: false
+      native: -n
+      description: Disable name resolution.
+  subcommands:
+  - name: capture
+    usage: capture [options]
+    description: Capture live traffic from an interface.
+    positional: none
+  - name: read
+    usage: read <file> [options]
+    description: Read and display packets from a capture file.
+    positional: single_source
+  - name: fields
+    usage: fields <file> --field <name>...
+    description: Extract selected fields from a capture file.
+    positional: single_source
+    set:
+      format: fields
+    required:
+    - field
+  - name: interfaces
+    usage: interfaces
+    description: List capture interfaces.
+    positional: none
+    native_args:
+    - -D
+  - name: reports
+    usage: reports [report]
+    description: Dump tshark reports, defaulting to fields.
+    positional: single_value
+    value_key: report
+    default_key: report
+    native_args:
+    - -G
+    - '{report}'
+  - name: raw
+    usage: raw <native-args...>
+    description: Run tshark directly with native arguments and no wrapper remapping.
+    positional: raw

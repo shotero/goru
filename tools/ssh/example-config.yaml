@@ -1,0 +1,20 @@
+# This file is intentionally outside the project root so it is not auto-loaded.
+tool: ssh
+type: config
+
+global:
+  server_alive_interval: 30
+  server_alive_count_max: 3
+
+hosts:
+  github:
+    hostname: github.com
+    user: git
+    identity_file: ~/.ssh/id_ed25519
+    identities_only: true
+
+  bastion:
+    hostname: bastion.example.com
+    user: deploy
+    port: 2222
+    forward_agent: false

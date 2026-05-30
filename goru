@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+ROOT="$(dirname "$0")"
+if [ -x "$ROOT/venv/bin/python" ]; then
+  exec "$ROOT/venv/bin/python" "$ROOT/cliwrap.py" "$@"
+fi
+exec python3 "$ROOT/cliwrap.py" "$@"

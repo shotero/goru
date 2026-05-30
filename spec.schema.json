@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cli-standard.local/spec.schema.json",
+  "title": "CLI Standard Tool Spec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "tool", "native", "wrapper"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "binary", "summary"],
+      "properties": {
+        "name": { "$ref": "#/$defs/name" },
+        "binary": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string" },
+        "raw_help_command": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "native": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["usage", "options"],
+      "properties": {
+        "usage": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "options": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/native_option" }
+        },
+        "option_groups": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/native_option_group" }
+        },
+        "version": { "type": "string" }
+      }
+    },
+    "wrapper": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["usage", "option_groups", "subcommands"],
+      "properties": {
+        "usage": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "option_groups": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/option_group" }
+        },
+        "subcommands": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/subcommand" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]*$"
+    },
+    "native_option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["flag", "argument"],
+      "properties": {
+        "flag": { "type": "string", "minLength": 1 },
+        "argument": {
+          "oneOf": [
+            { "type": "boolean", "const": false },
+            { "type": "string", "minLength": 1 }
+          ]
+        },
+        "description": { "type": "string" },
+        "platforms": {
+          "type": "array",
+          "items": { "enum": ["linux", "bsd", "macos", "openbsd"] },
+          "uniqueItems": true
+        }
+      }
+    },
+    "native_option_group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "summary", "flags"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "flags": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "wrapper_option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["flag", "key", "argument", "description"],
+      "properties": {
+        "flag": { "type": "string", "pattern": "^--[a-z][a-z0-9-]*$" },
+        "key": { "$ref": "#/$defs/name" },
+        "argument": {
+          "oneOf": [
+            { "type": "boolean", "const": false },
+            { "type": "string", "minLength": 1 }
+          ]
+        },
+        "description": { "type": "string", "minLength": 1 },
+        "native": {
+          "oneOf": [
+            { "type": "string", "minLength": 1 },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "repeatable": { "type": "boolean" },
+        "platforms": {
+          "type": "array",
+          "items": { "enum": ["linux", "bsd", "macos", "openbsd"] },
+          "uniqueItems": true
+        }
+      }
+    },
+    "option_group": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "options"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "options": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/wrapper_option" }
+        }
+      }
+    },
+    "subcommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "usage", "description", "positional"],
+      "properties": {
+        "name": { "$ref": "#/$defs/name" },
+        "usage": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "maps_to": { "type": "string" },
+        "positional": {
+          "enum": [
+            "raw",
+            "none",
+            "destination",
+            "destination_command",
+            "single_value",
+            "single_source",
+            "sources_destination",
+            "tar_paths"
+          ]
+        },
+        "required": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/name" },
+          "uniqueItems": true
+        },
+        "set": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["boolean", "string", "number", "integer", "null"]
+          }
+        },
+        "native_args": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "passthrough": { "enum": ["before_destination", "before_positionals", "after_positionals"] },
+        "command": { "enum": ["required", "optional"] },
+        "value_key": { "$ref": "#/$defs/name" },
+        "default_key": { "$ref": "#/$defs/name" },
+        "connection_options": { "type": "boolean" }
+      }
+    }
+  }
+}

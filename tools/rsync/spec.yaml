@@ -1,0 +1,528 @@
+$schema: ../../spec.schema.json
+schema_version: 1
+tool:
+  name: rsync
+  binary: rsync
+  summary: Standardized rsync wrapper for copy, mirror, preview, and list workflows.
+  raw_help_command:
+  - --help
+native:
+  usage:
+  - rsync [-0468BCDEFHIKLOPRSTWVabcdghiklnopqrtuvxyz] [-e program] [-f filter] [--8-bit-output]
+    [--address=sourceaddr] [--append] [--backup-dir=dir] [--bwlimit=limit] [--cache
+    | --no-cache] [--checksum-seed=NUM] [--chmod=mode] [--compare-dest=dir] [--compress]
+    [--compress-level=NUM] [--contimeout] [--copy-dest=dir] [--copy-unsafe-links]
+    [--del] [--delete-after | --delete-before | --delete-delay | --delete-during]
+    [--delete-excluded] [--delay-updates] [--dirs] [--no-dirs] [--existing] [--exclude=pattern]
+    [--exclude-from=file] [--executability] [--extended-attributes] [--existing] [--files-from=filespec]
+    [--force] [--ignore-errors] [--ignore-existing] [--ignore-non-existing] [--include=pattern]
+    [--include-from=file] [--inplace] [--itemize-changes] [--keep-dirlinks] [--link-dest=dir]
+    [--list-only] [--max-delete=NUM] [--max-size=SIZE] [--min-size=SIZE] [--modify-window=sec]
+    [--no-implied-dirs] [--no-motd] [--numeric-ids] [--out-format=FMT] [--partial]
+    [--partial-dir] [--password-file=pwfile] [--port=portnumber] [--progress] [--protocol=NUM]
+    [--prune-empty-dirs] [--read-batch=file] [--remove-source-files] [--rsync-path=program]
+    [--safe-links] [--size-only] [--sockopts=sockopts] [--specials] [--stats] [--suffix]
+    [--super] [--timeout=seconds] [--only-write-batch=file | --write-batch=file] source
+    ... directory
+  options:
+  - flag: '-0'
+    argument: false
+  - flag: '-4'
+    argument: false
+  - flag: '-6'
+    argument: false
+  - flag: '-8'
+    argument: false
+  - flag: -B
+    argument: false
+  - flag: -C
+    argument: false
+  - flag: -D
+    argument: false
+  - flag: -E
+    argument: false
+  - flag: -F
+    argument: false
+  - flag: -H
+    argument: false
+  - flag: -I
+    argument: false
+  - flag: -K
+    argument: false
+  - flag: -L
+    argument: false
+  - flag: -O
+    argument: false
+  - flag: -P
+    argument: false
+  - flag: -R
+    argument: false
+  - flag: -S
+    argument: false
+  - flag: -T
+    argument: false
+  - flag: -W
+    argument: false
+  - flag: -V
+    argument: false
+  - flag: -a
+    argument: false
+  - flag: -b
+    argument: false
+  - flag: -c
+    argument: false
+  - flag: -d
+    argument: false
+  - flag: -g
+    argument: false
+  - flag: -h
+    argument: false
+  - flag: -i
+    argument: false
+  - flag: -k
+    argument: false
+  - flag: -l
+    argument: false
+  - flag: -n
+    argument: false
+  - flag: -o
+    argument: false
+  - flag: -p
+    argument: false
+  - flag: -q
+    argument: false
+  - flag: -r
+    argument: false
+  - flag: -t
+    argument: false
+  - flag: -u
+    argument: false
+  - flag: -v
+    argument: false
+  - flag: -x
+    argument: false
+  - flag: -y
+    argument: false
+  - flag: -z
+    argument: false
+  - flag: -e
+    argument: program
+  - flag: -f
+    argument: filter
+  - flag: --8-bit-output
+    argument: false
+  - flag: --address
+    argument: sourceaddr
+  - flag: --append
+    argument: false
+  - flag: --backup-dir
+    argument: dir
+  - flag: --bwlimit
+    argument: limit
+  - flag: --cache
+    argument: false
+  - flag: --no-cache
+    argument: false
+  - flag: --checksum-seed
+    argument: NUM
+  - flag: --chmod
+    argument: mode
+  - flag: --compare-dest
+    argument: dir
+  - flag: --compress
+    argument: false
+  - flag: --compress-level
+    argument: NUM
+  - flag: --contimeout
+    argument: false
+  - flag: --copy-dest
+    argument: dir
+  - flag: --copy-unsafe-links
+    argument: false
+  - flag: --del
+    argument: false
+  - flag: --delete-after
+    argument: false
+  - flag: --delete-before
+    argument: false
+  - flag: --delete-delay
+    argument: false
+  - flag: --delete-during
+    argument: false
+  - flag: --delete-excluded
+    argument: false
+  - flag: --delay-updates
+    argument: false
+  - flag: --dirs
+    argument: false
+  - flag: --no-dirs
+    argument: false
+  - flag: --existing
+    argument: false
+  - flag: --exclude
+    argument: pattern
+  - flag: --exclude-from
+    argument: file
+  - flag: --executability
+    argument: false
+  - flag: --extended-attributes
+    argument: false
+  - flag: --files-from
+    argument: filespec
+  - flag: --force
+    argument: false
+  - flag: --ignore-errors
+    argument: false
+  - flag: --ignore-existing
+    argument: false
+  - flag: --ignore-non-existing
+    argument: false
+  - flag: --include
+    argument: pattern
+  - flag: --include-from
+    argument: file
+  - flag: --inplace
+    argument: false
+  - flag: --itemize-changes
+    argument: false
+  - flag: --keep-dirlinks
+    argument: false
+  - flag: --link-dest
+    argument: dir
+  - flag: --list-only
+    argument: false
+  - flag: --max-delete
+    argument: NUM
+  - flag: --max-size
+    argument: SIZE
+  - flag: --min-size
+    argument: SIZE
+  - flag: --modify-window
+    argument: sec
+  - flag: --no-implied-dirs
+    argument: false
+  - flag: --no-motd
+    argument: false
+  - flag: --numeric-ids
+    argument: false
+  - flag: --out-format
+    argument: FMT
+  - flag: --partial
+    argument: false
+  - flag: --partial-dir
+    argument: false
+  - flag: --password-file
+    argument: pwfile
+  - flag: --port
+    argument: portnumber
+  - flag: --progress
+    argument: false
+  - flag: --protocol
+    argument: NUM
+  - flag: --prune-empty-dirs
+    argument: false
+  - flag: --read-batch
+    argument: file
+  - flag: --remove-source-files
+    argument: false
+  - flag: --rsync-path
+    argument: program
+  - flag: --safe-links
+    argument: false
+  - flag: --size-only
+    argument: false
+  - flag: --sockopts
+    argument: sockopts
+  - flag: --specials
+    argument: false
+  - flag: --stats
+    argument: false
+  - flag: --suffix
+    argument: false
+  - flag: --super
+    argument: false
+  - flag: --timeout
+    argument: seconds
+  - flag: --only-write-batch
+    argument: file
+  - flag: --write-batch
+    argument: file
+  option_groups:
+  - name: Transfer selection
+    summary: Choose what files are copied and how source lists are read.
+    flags:
+    - -a
+    - -d
+    - -r
+    - --files-from
+    - --include
+    - --include-from
+    - --exclude
+    - --exclude-from
+    - --filter
+  - name: Metadata preservation
+    summary: Preserve links, owners, groups, permissions, timestamps, devices, and
+      extended metadata.
+    flags:
+    - -E
+    - -g
+    - -H
+    - -K
+    - -L
+    - -l
+    - -O
+    - -o
+    - -p
+    - -t
+    - --extended-attributes
+    - --executability
+  - name: Comparison and deletion
+    summary: Control file comparison, deletion, updates, and destination handling.
+    flags:
+    - -c
+    - -I
+    - -u
+    - --append
+    - --checksum-seed
+    - --compare-dest
+    - --copy-dest
+    - --del
+    - --delete-after
+    - --delete-before
+    - --delete-delay
+    - --delete-during
+    - --delete-excluded
+    - --existing
+    - --ignore-existing
+    - --ignore-non-existing
+  - name: Transport
+    summary: Configure compression, remote shell, ports, network timeouts, and bandwidth.
+    flags:
+    - '-4'
+    - '-6'
+    - -e
+    - -z
+    - --8-bit-output
+    - --address
+    - --bwlimit
+    - --compress
+    - --compress-level
+    - --contimeout
+    - --port
+    - --protocol
+    - --rsync-path
+    - --sockopts
+    - --timeout
+  - name: Output and safety
+    summary: Preview, inspect, and control output without changing transfer semantics.
+    flags:
+    - -h
+    - -i
+    - -n
+    - -P
+    - -q
+    - -v
+    - --itemize-changes
+    - --list-only
+    - --no-motd
+    - --out-format
+    - --progress
+    - --stats
+  - name: Batch and backup
+    summary: Handle backups, partial files, delayed updates, and batch files.
+    flags:
+    - -b
+    - -B
+    - --backup-dir
+    - --delay-updates
+    - --partial
+    - --partial-dir
+    - --read-batch
+    - --suffix
+    - --only-write-batch
+    - --write-batch
+wrapper:
+  usage:
+  - goru run rsync copy <source...> <destination> [options] [-- native-rsync-options...]
+  - goru run rsync mirror <source...> <destination> [options] [-- native-rsync-options...]
+  - goru run rsync preview <source...> <destination> [options] [-- native-rsync-options...]
+  - goru run rsync list <source> [options] [-- native-rsync-options...]
+  - goru run rsync raw <native-args...>
+  option_groups:
+  - name: Endpoints
+    options:
+    - flag: --source
+      key: sources
+      argument: path
+      repeatable: true
+      native: positional
+      description: Source path. May be repeated.
+    - flag: --destination
+      key: destination
+      argument: path
+      native: positional
+      description: Destination path for copy, mirror, and preview.
+  - name: Transfer
+    options:
+    - flag: --archive
+      key: archive
+      argument: false
+      native: -a
+      description: Preserve common metadata. Enabled automatically by mirror.
+    - flag: --recursive
+      key: recursive
+      argument: false
+      native: -r
+      description: Copy directories recursively without full archive behavior.
+    - flag: --compress
+      key: compress
+      argument: false
+      native: -z
+      description: Compress file data during transfer.
+    - flag: --checksum
+      key: checksum
+      argument: false
+      native: -c
+      description: Compare by checksum instead of size and timestamp.
+    - flag: --bwlimit
+      key: bwlimit
+      argument: limit
+      native: --bwlimit
+      description: Limit transfer bandwidth.
+  - name: Metadata
+    options:
+    - flag: --links
+      key: links
+      argument: false
+      native: -l
+      description: Preserve symbolic links.
+    - flag: --preserve-times
+      key: preserve_times
+      argument: false
+      native: -t
+      description: Preserve modification times.
+    - flag: --preserve-owner
+      key: preserve_owner
+      argument: false
+      native: -o
+      description: Preserve owner.
+    - flag: --preserve-group
+      key: preserve_group
+      argument: false
+      native: -g
+      description: Preserve group.
+    - flag: --preserve-permissions
+      key: preserve_permissions
+      argument: false
+      native: -p
+      description: Preserve permissions.
+  - name: Safety
+    options:
+    - flag: --dry-run
+      key: dry_run
+      argument: false
+      native: -n
+      description: Show what would happen without copying.
+    - flag: --delete
+      key: delete
+      argument: false
+      native: --del
+      description: Delete destination files not present in source. Enabled automatically
+        by mirror.
+    - flag: --ignore-existing
+      key: ignore_existing
+      argument: false
+      native: --ignore-existing
+      description: Skip files that already exist on the destination.
+  - name: Filters
+    options:
+    - flag: --exclude
+      key: exclude
+      argument: pattern
+      repeatable: true
+      native: --exclude
+      description: Exclude files matching pattern. May be repeated.
+    - flag: --include
+      key: include
+      argument: pattern
+      repeatable: true
+      native: --include
+      description: Include files matching pattern. May be repeated.
+    - flag: --filter
+      key: filter
+      argument: rule
+      repeatable: true
+      native: -f
+      description: Add an rsync filter rule. May be repeated.
+    - flag: --files-from
+      key: files_from
+      argument: file
+      native: --files-from
+      description: Read source file list from file.
+    - flag: --max-size
+      key: max_size
+      argument: size
+      native: --max-size
+      description: Skip files larger than size.
+    - flag: --min-size
+      key: min_size
+      argument: size
+      native: --min-size
+      description: Skip files smaller than size.
+  - name: Output
+    options:
+    - flag: --verbose
+      key: verbose
+      argument: false
+      native: -v
+      description: Increase rsync verbosity.
+    - flag: --quiet
+      key: quiet
+      argument: false
+      native: -q
+      description: Reduce rsync output.
+    - flag: --progress
+      key: progress
+      argument: false
+      native: --progress
+      description: Show transfer progress.
+    - flag: --stats
+      key: stats
+      argument: false
+      native: --stats
+      description: Show transfer statistics.
+  subcommands:
+  - name: copy
+    usage: copy <source...> <destination>
+    description: Copy files without deleting destination extras.
+    maps_to: rsync [options] source... destination
+    positional: sources_destination
+  - name: mirror
+    usage: mirror <source...> <destination>
+    description: Synchronize destination and delete extras.
+    maps_to: rsync -a --del [options] source... destination
+    positional: sources_destination
+    set:
+      archive: true
+      delete: true
+  - name: preview
+    usage: preview <source...> <destination>
+    description: Show planned changes without copying.
+    maps_to: rsync -n --itemize-changes [options] source... destination
+    positional: sources_destination
+    set:
+      dry_run: true
+    native_args:
+    - --itemize-changes
+  - name: list
+    usage: list <source>
+    description: List source contents without copying.
+    maps_to: rsync --list-only [options] source
+    positional: single_source
+    native_args:
+    - --list-only
+  - name: raw
+    usage: raw <native-args...>
+    description: Run rsync directly with native arguments and no wrapper remapping.
+    maps_to: rsync native-args...
+    positional: raw

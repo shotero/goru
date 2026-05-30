@@ -1,0 +1,292 @@
+$schema: ../../spec.schema.json
+schema_version: 1
+tool:
+  name: ssh
+  binary: ssh
+  summary: Standardized SSH client wrapper.
+  raw_help_command: []
+native:
+  usage:
+  - ssh [-46AaCfGgKkMNnqsTtVvXxYy] [-B bind_interface] [-b bind_address] [-c cipher_spec]
+    [-D [bind_address:]port] [-E log_file] [-e escape_char] [-F configfile] [-I pkcs11]
+    [-i identity_file] [-J destination] [-L address] [-l login_name] [-m mac_spec]
+    [-O ctl_cmd] [-o option] [-P tag] [-p port] [-R address] [-S ctl_path] [-W host:port]
+    [-w local_tun[:remote_tun]] destination [command [argument ...]]
+  - ssh [-Q query_option]
+  options:
+  - flag: '-4'
+    argument: false
+  - flag: '-6'
+    argument: false
+  - flag: -A
+    argument: false
+  - flag: -a
+    argument: false
+  - flag: -B
+    argument: bind_interface
+  - flag: -b
+    argument: bind_address
+  - flag: -c
+    argument: cipher_spec
+  - flag: -C
+    argument: false
+  - flag: -D
+    argument: '[bind_address:]port'
+  - flag: -E
+    argument: log_file
+  - flag: -e
+    argument: escape_char
+  - flag: -F
+    argument: configfile
+  - flag: -f
+    argument: false
+  - flag: -G
+    argument: false
+  - flag: -g
+    argument: false
+  - flag: -I
+    argument: pkcs11
+  - flag: -i
+    argument: identity_file
+  - flag: -J
+    argument: destination
+  - flag: -K
+    argument: false
+  - flag: -k
+    argument: false
+  - flag: -L
+    argument: address
+  - flag: -l
+    argument: login_name
+  - flag: -M
+    argument: false
+  - flag: -m
+    argument: mac_spec
+  - flag: -N
+    argument: false
+  - flag: -n
+    argument: false
+  - flag: -O
+    argument: ctl_cmd
+  - flag: -o
+    argument: option
+  - flag: -P
+    argument: tag
+  - flag: -p
+    argument: port
+  - flag: -Q
+    argument: query_option
+  - flag: -R
+    argument: address
+  - flag: -S
+    argument: ctl_path
+  - flag: -T
+    argument: false
+  - flag: -t
+    argument: false
+  - flag: -V
+    argument: false
+  - flag: -v
+    argument: false
+  - flag: -W
+    argument: host:port
+  - flag: -w
+    argument: local_tun[:remote_tun]
+  - flag: -X
+    argument: false
+  - flag: -x
+    argument: false
+  - flag: -Y
+    argument: false
+  - flag: -y
+    argument: false
+  option_groups:
+  - name: Addressing
+    summary: Choose the target host, user, port, bind address, or address family.
+    flags:
+    - '-4'
+    - '-6'
+    - -B
+    - -b
+    - -J
+    - -l
+    - -p
+  - name: Authentication
+    summary: Control identities, agent forwarding, GSSAPI/Kerberos, and PKCS#11 providers.
+    flags:
+    - -A
+    - -a
+    - -i
+    - -I
+    - -K
+    - -k
+  - name: Session behavior
+    summary: Control terminal allocation, backgrounding, verbosity, compression, and
+      config inspection.
+    flags:
+    - -C
+    - -F
+    - -f
+    - -G
+    - -n
+    - -q
+    - -T
+    - -t
+    - -V
+    - -v
+  - name: Forwarding
+    summary: Create local, remote, dynamic, stdio, tunnel, and X11 forwarding.
+    flags:
+    - -D
+    - -g
+    - -L
+    - -N
+    - -R
+    - -W
+    - -w
+    - -X
+    - -x
+    - -Y
+  - name: Advanced control
+    summary: Use multiplexing, escape/log options, algorithm queries, and arbitrary
+      ssh_config options.
+    flags:
+    - -c
+    - -E
+    - -e
+    - -M
+    - -m
+    - -O
+    - -o
+    - -P
+    - -Q
+    - -S
+    - -y
+wrapper:
+  usage:
+  - goru run ssh connect <destination> [options] [-- native-ssh-options...]
+  - goru run ssh exec <destination> [options] -- <command...>
+  - goru run ssh tunnel <destination> --local PORT --remote HOST:PORT [options]
+  - goru run ssh socks <destination> --listen [BIND:]PORT [options]
+  - goru run ssh config <destination> [options]
+  - goru run ssh query <option>
+  - goru run ssh raw <native-args...>
+  option_groups:
+  - name: Connection
+    options:
+    - flag: --destination
+      key: destination
+      argument: host
+      native: positional
+      description: Remote host or ssh:// URI. Usually supplied positionally.
+    - flag: --user
+      key: user
+      argument: name
+      native: -l
+      description: Login username for subcommands that connect.
+    - flag: --port
+      key: port
+      argument: port
+      native: -p
+      description: Remote SSH port for subcommands that connect.
+    - flag: --identity
+      key: identity
+      argument: file
+      native: -i
+      description: Private key or identity file.
+  - name: Behavior
+    options:
+    - flag: --compress
+      key: compress
+      argument: false
+      native: -C
+      description: Enable compression for the connection.
+    - flag: --verbose
+      key: verbose
+      argument: false
+      native: -v
+      description: Increase SSH verbosity.
+    - flag: --quiet
+      key: quiet
+      argument: false
+      native: -q
+      description: Reduce SSH output.
+  - name: Forwarding
+    options:
+    - flag: --local
+      key: local
+      argument: PORT
+      native: template
+      description: Local port for the tunnel subcommand.
+    - flag: --remote
+      key: remote
+      argument: HOST:PORT
+      native: template
+      description: Remote endpoint for the tunnel subcommand.
+    - flag: --listen
+      key: listen
+      argument: '[BIND:]PORT'
+      native: template
+      description: Local bind address and port for the socks subcommand.
+  subcommands:
+  - name: connect
+    usage: connect <destination>
+    description: Open an interactive SSH session.
+    maps_to: ssh [options] destination
+    positional: destination
+    passthrough: before_destination
+  - name: exec
+    usage: exec <destination> -- <command...>
+    description: Run a remote command.
+    maps_to: ssh [options] destination command...
+    positional: destination_command
+    command: required
+  - name: tunnel
+    usage: tunnel <destination> --local PORT --remote HOST:PORT
+    description: Create local port forwarding.
+    maps_to: ssh -N -L PORT:HOST:PORT destination
+    positional: destination
+    required:
+    - local
+    - remote
+    native_args:
+    - -N
+    - -L
+    - '{local}:{remote}'
+    passthrough: before_destination
+  - name: socks
+    usage: socks <destination> --listen [BIND:]PORT
+    description: Create a dynamic SOCKS proxy.
+    maps_to: ssh -N -D [BIND:]PORT destination
+    positional: destination
+    required:
+    - listen
+    native_args:
+    - -N
+    - -D
+    - '{listen}'
+    passthrough: before_destination
+  - name: config
+    usage: config <destination>
+    description: Print the resolved SSH configuration.
+    maps_to: ssh -G destination
+    positional: destination
+    native_args:
+    - -G
+    passthrough: before_destination
+  - name: query
+    usage: query <option>
+    description: Run ssh -Q for algorithms and supported values.
+    maps_to: ssh -Q option
+    positional: single_value
+    value_key: query
+    default_key: query
+    connection_options: false
+    native_args:
+    - -Q
+    - '{query}'
+  - name: raw
+    usage: raw <native-args...>
+    description: Run ssh directly with native arguments and no wrapper remapping.
+    maps_to: ssh native-args...
+    positional: raw
