@@ -45,6 +45,8 @@ schema_version: 1
 tool:
   name: ssh
   binary: ssh
+  # Optional for one wrapper that can select from multiple native binaries.
+  binaries: {}
   summary: Standardized SSH client wrapper.
   raw_help_command: []
 
@@ -59,7 +61,7 @@ wrapper:
   subcommands: []
 ```
 
-`tool` contains identity and native binary metadata.
+`tool` contains identity and native binary metadata. Use `tool.binaries` when one wrapper tool selects from multiple native binaries, such as `qemu-system-<arch>`.
 
 `native` contains captured native help/usage/options and organized native option groups for help display.
 
@@ -82,7 +84,7 @@ Supported root commands:
 
 `./goru run <tool> --raw-help` shows the native tool help.
 
-`./goru translate` converts between native commands and wrapper commands. Wrapper-to-native uses `plugin.build_args(...)`. Native-to-wrapper uses `plugin.translate_native_args(...)`.
+`./goru translate` converts between native commands and wrapper commands. Wrapper-to-native uses `plugin.build_command(...)`. Native-to-wrapper uses `plugin.translate_native_args(...)`, or `plugin.translate_native_command(...)` when the native binary name is needed for translation.
 
 ## Testing
 
@@ -95,7 +97,7 @@ venv/bin/python -m pytest
 When editing Python files, also run a syntax check:
 
 ```sh
-venv/bin/python -m py_compile cliwrap.py spec_validation.py plugins/base.py tools/ssh/plugin.py tools/rsync/plugin.py tools/tar/plugin.py tools/tshark/plugin.py
+venv/bin/python -m py_compile cliwrap.py spec_validation.py plugins/base.py tools/ssh/plugin.py tools/rsync/plugin.py tools/tar/plugin.py tools/tshark/plugin.py tools/qemu/plugin.py
 ```
 
 When editing specs, run:

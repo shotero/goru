@@ -20,6 +20,10 @@
       "properties": {
         "name": { "$ref": "#/$defs/name" },
         "binary": { "type": "string", "minLength": 1 },
+        "binaries": {
+          "type": "object",
+          "additionalProperties": { "type": "string", "minLength": 1 }
+        },
         "summary": { "type": "string" },
         "raw_help_command": {
           "type": "array",
@@ -125,6 +129,10 @@
             { "type": "array", "items": { "type": "string" } }
           ]
         },
+        "template": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
         "repeatable": { "type": "boolean" },
         "platforms": {
           "type": "array",
@@ -162,6 +170,7 @@
             "destination_command",
             "single_value",
             "single_source",
+            "single_image",
             "sources_destination",
             "tar_paths"
           ]

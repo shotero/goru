@@ -348,7 +348,7 @@ def infer_translation_direction(tokens: list[str]) -> str:
     if is_wrapper_command(tokens):
         return "native"
     first = Path(tokens[0]).name
-    if any(first == tool_metadata(plugin).get("binary", plugin.binary) for plugin in REGISTRY.values()):
+    if any(first in plugin.native_binaries() for plugin in REGISTRY.values()):
         return "wrapper"
     raise ValueError("cannot infer translation direction; use --to wrapper or --to native")
 
@@ -367,8 +367,7 @@ def translate_wrapper_to_native(tokens: list[str]) -> dict[str, Any]:
     tool_name = tokens[run_index + 1]
     plugin = get_plugin(tool_name)
     wrapper_args = tokens[run_index + 2 :]
-    native_args = plugin.build_args(wrapper_args, {})
-    command = [tool_metadata(plugin).get("binary", plugin.binary), *native_args]
+    command = plugin.build_command(wrapper_args, {})
     return {
         "direction": "native",
         "tool": tool_metadata(plugin).get("name", plugin.name),
@@ -379,7 +378,10 @@ def translate_wrapper_to_native(tokens: list[str]) -> dict[str, Any]:
 
 def translate_native_to_wrapper(tokens: list[str]) -> dict[str, Any]:
     plugin = plugin_for_binary(tokens[0])
-    wrapper_args = plugin.translate_native_args(tokens[1:])
+    if hasattr(plugin, "translate_native_command"):
+        wrapper_args = plugin.translate_native_command(tokens)
+    else:
+        wrapper_args = plugin.translate_native_args(tokens[1:])
     command = ["./goru", "run", tool_metadata(plugin).get("name", plugin.name), *wrapper_args]
     return {
         "direction": "wrapper",
@@ -392,9 +394,9 @@ def translate_native_to_wrapper(tokens: list[str]) -> dict[str, Any]:
 def plugin_for_binary(binary: str):
     binary_name = Path(binary).name
     for plugin in REGISTRY.values():
-        if binary_name == tool_metadata(plugin).get("binary", plugin.binary):
+        if binary_name in plugin.native_binaries():
             return plugin
-    known = ", ".join(tool_metadata(plugin).get("binary", plugin.binary) for plugin in REGISTRY.values())
+    known = ", ".join(sorted(binary for plugin in REGISTRY.values() for binary in plugin.native_binaries()))
     raise ValueError(f"unknown native command '{binary}'. Known binaries: {known}")
 
 
@@ -439,11 +441,10 @@ def cmd_run(tool_name: str, args: tuple[str, ...], config_path: str | None, outp
 
     config = load_config(config_path, plugin.name)
     try:
-        native_args = plugin.build_args(list(args), config)
+        command = plugin.build_command(list(args), config)
     except ValueError as exc:
         emit_error(str(exc), output_format=output_format)
 
-    command = [plugin.binary, *native_args]
     try:
         if output_format != "text":
             result = subprocess.run(command, text=True, capture_output=True, check=False)

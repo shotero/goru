@@ -14,6 +14,7 @@ def test_validate_specs_command() -> None:
     assert "valid rsync tools/rsync/spec.yaml" in result.output
     assert "valid tar tools/tar/spec.yaml" in result.output
     assert "valid tshark tools/tshark/spec.yaml" in result.output
+    assert "valid qemu tools/qemu/spec.yaml" in result.output
 
 
 def test_help_includes_native_flag_groups() -> None:
@@ -58,3 +59,9 @@ def test_translate_native_tshark_fields_to_wrapper() -> None:
     result = run_cli("translate", "tshark -r sample.pcap -T fields -e ip.src -e tcp.port")
     assert result.exit_code == 0
     assert result.output.strip() == "./goru run tshark fields sample.pcap --field ip.src --field tcp.port"
+
+
+def test_translate_native_qemu_to_wrapper() -> None:
+    result = run_cli("translate", "qemu-system-aarch64 -m 2G -smp 4 -drive file=vm.qcow2,if=virtio -nographic")
+    assert result.exit_code == 0
+    assert result.output.strip() == "./goru run qemu boot vm.qcow2 --arch aarch64 --memory 2G --cpus 4 --headless"

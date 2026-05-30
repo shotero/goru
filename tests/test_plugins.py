@@ -37,6 +37,41 @@ def test_tshark_fields_maps_to_native_args() -> None:
     ) == ["-r", "sample.pcap", "-T", "fields", "-e", "ip.src", "-e", "tcp.port", "-E", "header=y"]
 
 
+def test_qemu_boot_selects_arch_binary_and_maps_common_flags() -> None:
+    plugin = REGISTRY["qemu"]
+    assert plugin.build_command(
+        ["boot", "vm.qcow2", "--arch", "aarch64", "--memory", "2G", "--cpus", "4", "--headless"],
+        {},
+    ) == [
+        "qemu-system-aarch64",
+        "-smp",
+        "4",
+        "-m",
+        "2G",
+        "-drive",
+        "file=vm.qcow2,if=virtio",
+        "-nographic",
+    ]
+
+
+def test_qemu_install_maps_iso_and_disk() -> None:
+    plugin = REGISTRY["qemu"]
+    assert plugin.build_command(
+        ["install", "installer.iso", "--disk", "vm.qcow2", "--arch", "x86_64", "--memory", "4G"],
+        {},
+    ) == [
+        "qemu-system-x86_64",
+        "-m",
+        "4G",
+        "-drive",
+        "file=vm.qcow2,if=virtio",
+        "-cdrom",
+        "installer.iso",
+        "-boot",
+        "d",
+    ]
+
+
 def test_rsync_translates_native_to_wrapper() -> None:
     plugin = REGISTRY["rsync"]
     assert plugin.translate_native_args(["-az", "--exclude", "*.tmp", "src/", "dest/"]) == [
@@ -102,4 +137,16 @@ def test_tshark_translates_native_to_wrapper() -> None:
         "--display-filter",
         "http",
         "--details",
+    ]
+
+
+def test_qemu_translates_native_to_wrapper_with_arch() -> None:
+    plugin = REGISTRY["qemu"]
+    assert plugin.translate_native_command(["qemu-system-riscv64", "-m", "1G", "-drive", "file=disk.qcow2,if=virtio"]) == [
+        "boot",
+        "disk.qcow2",
+        "--arch",
+        "riscv64",
+        "--memory",
+        "1G",
     ]

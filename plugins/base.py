@@ -26,6 +26,18 @@ class ToolPlugin:
     def build_args(self, argv: list[str], config: dict[str, Any]) -> list[str]:
         raise NotImplementedError
 
+    def build_command(self, argv: list[str], config: dict[str, Any]) -> list[str]:
+        return [self.binary, *self.build_args(argv, config)]
+
+    def native_binaries(self) -> set[str]:
+        binaries = {self.binary}
+        tool = self.spec.get("tool", {})
+        if isinstance(tool, dict):
+            extra = tool.get("binaries", {})
+            if isinstance(extra, dict):
+                binaries.update(str(binary) for binary in extra.values())
+        return binaries
+
     def translate_native_args(self, argv: list[str]) -> list[str]:
         raise NotImplementedError(f"{self.name} does not support native-to-wrapper translation")
 

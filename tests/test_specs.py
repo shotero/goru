@@ -19,4 +19,6 @@ def test_specs_use_canonical_shape() -> None:
         assert set(spec) == {"$schema", "schema_version", "tool", "native", "wrapper"}
         assert spec["tool"]["name"] == plugin.name
         assert spec["tool"]["binary"] == plugin.binary
+        if "binaries" in spec["tool"]:
+            assert plugin.binary in spec["tool"]["binaries"].values()
         assert isinstance(spec["wrapper"]["subcommands"], list)

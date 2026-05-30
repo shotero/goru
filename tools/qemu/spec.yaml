@@ -1,0 +1,304 @@
+$schema: ../../spec.schema.json
+schema_version: 1
+tool:
+  name: qemu
+  binary: qemu-system-x86_64
+  binaries:
+    x86_64: qemu-system-x86_64
+    i386: qemu-system-i386
+    aarch64: qemu-system-aarch64
+    arm: qemu-system-arm
+    riscv64: qemu-system-riscv64
+    ppc64: qemu-system-ppc64
+    s390x: qemu-system-s390x
+  summary: Standardized QEMU system emulator wrapper with architecture selection.
+  raw_help_command:
+  - --help
+native:
+  usage:
+  - qemu-system-<arch> [options] [disk_image]
+  options:
+  - flag: -machine
+    argument: machine
+    description: Select emulated machine type and machine options.
+  - flag: -cpu
+    argument: cpu
+    description: Select CPU model.
+  - flag: -smp
+    argument: cpus
+    description: Number and topology of virtual CPUs.
+  - flag: -m
+    argument: size
+    description: Guest RAM size.
+  - flag: -accel
+    argument: accelerator
+    description: Select accelerator such as kvm, hvf, whpx, tcg.
+  - flag: -name
+    argument: name
+    description: Guest name.
+  - flag: -drive
+    argument: option[,option...]
+    description: Define a block drive.
+  - flag: -cdrom
+    argument: file
+    description: Use file as IDE CD-ROM image.
+  - flag: -boot
+    argument: order
+    description: Configure boot order.
+  - flag: -snapshot
+    argument: false
+    description: Write temporary disk changes only.
+  - flag: -netdev
+    argument: options
+    description: Define a network backend.
+  - flag: -device
+    argument: device
+    description: Add an emulated device.
+  - flag: -display
+    argument: type
+    description: Select display backend.
+  - flag: -nographic
+    argument: false
+    description: Disable graphical output and redirect serial to console.
+  - flag: -serial
+    argument: dev
+    description: Redirect serial port.
+  - flag: -monitor
+    argument: dev
+    description: Redirect QEMU monitor.
+  - flag: -qmp
+    argument: dev
+    description: Open QMP monitor.
+  - flag: -S
+    argument: false
+    description: Do not start CPU at launch.
+  - flag: -s
+    argument: false
+    description: Shortcut for gdbserver on tcp::1234.
+  - flag: -kernel
+    argument: bzImage
+    description: Boot Linux kernel directly.
+  - flag: -initrd
+    argument: file
+    description: Use initial ramdisk when direct kernel booting.
+  - flag: -append
+    argument: cmdline
+    description: Kernel command line when direct kernel booting.
+  - flag: -bios
+    argument: file
+    description: Use alternate firmware image.
+  - flag: -enable-kvm
+    argument: false
+    platforms:
+    - linux
+    description: Enable Linux KVM acceleration.
+  - flag: -version
+    argument: false
+  - flag: -help
+    argument: false
+  option_groups:
+  - name: Machine
+    summary: Select architecture-specific machine, CPU, accelerator, memory, and CPU topology.
+    flags:
+    - -machine
+    - -cpu
+    - -smp
+    - -m
+    - -accel
+    - -enable-kvm
+  - name: Storage and boot
+    summary: Attach disks, CD-ROM images, firmware, kernels, and boot controls.
+    flags:
+    - -drive
+    - -cdrom
+    - -boot
+    - -snapshot
+    - -kernel
+    - -initrd
+    - -append
+    - -bios
+  - name: Network and devices
+    summary: Add network backends and emulated devices.
+    flags:
+    - -netdev
+    - -device
+  - name: Console and control
+    summary: Configure display, serial output, QEMU monitor, QMP, and debug launch behavior.
+    flags:
+    - -display
+    - -nographic
+    - -serial
+    - -monitor
+    - -qmp
+    - -S
+    - -s
+wrapper:
+  usage:
+  - goru run qemu run --arch <arch> [options] [-- native-qemu-options...]
+  - goru run qemu boot <image> --arch <arch> [options] [-- native-qemu-options...]
+  - goru run qemu install <iso> --disk <image> --arch <arch> [options] [-- native-qemu-options...]
+  - goru run qemu monitor --arch <arch> [options] [-- native-qemu-options...]
+  - goru run qemu raw --arch <arch> <native-args...>
+  option_groups:
+  - name: Machine
+    options:
+    - flag: --arch
+      key: arch
+      argument: arch
+      native: selector
+      description: Select QEMU system binary architecture, such as x86_64, aarch64, arm, riscv64, ppc64, s390x, or i386.
+    - flag: --machine
+      key: machine
+      argument: type
+      native: -machine
+      description: Machine type and machine options.
+    - flag: --cpu
+      key: cpu
+      argument: model
+      native: -cpu
+      description: CPU model.
+    - flag: --cpus
+      key: cpus
+      argument: count
+      native: -smp
+      description: Number or topology of virtual CPUs.
+    - flag: --memory
+      key: memory
+      argument: size
+      native: -m
+      description: Guest memory size, such as 2G or 4096M.
+    - flag: --accel
+      key: accel
+      argument: accel
+      native: -accel
+      description: Accelerator backend, such as hvf, kvm, whpx, or tcg.
+    - flag: --name
+      key: name
+      argument: name
+      native: -name
+      description: Guest name.
+  - name: Storage and boot
+    options:
+    - flag: --disk
+      key: disk
+      argument: image
+      native: template
+      template:
+      - -drive
+      - file={value},if=virtio
+      description: Attach a disk image as a virtio drive.
+    - flag: --cdrom
+      key: cdrom
+      argument: iso
+      native: -cdrom
+      description: Attach an ISO as a CD-ROM.
+    - flag: --boot
+      key: boot
+      argument: order
+      native: -boot
+      description: Boot order or boot options.
+    - flag: --snapshot
+      key: snapshot
+      argument: false
+      native: -snapshot
+      description: Run without persisting disk writes.
+    - flag: --kernel
+      key: kernel
+      argument: file
+      native: -kernel
+      description: Boot a kernel directly.
+    - flag: --initrd
+      key: initrd
+      argument: file
+      native: -initrd
+      description: Initial ramdisk for direct kernel boot.
+    - flag: --append
+      key: append
+      argument: cmdline
+      native: -append
+      description: Kernel command line for direct kernel boot.
+  - name: Network and devices
+    options:
+    - flag: --netdev
+      key: netdev
+      argument: spec
+      repeatable: true
+      native: -netdev
+      description: Add a QEMU netdev backend. May be repeated.
+    - flag: --device
+      key: device
+      argument: spec
+      repeatable: true
+      native: -device
+      description: Add a QEMU device. May be repeated.
+  - name: Display and control
+    options:
+    - flag: --display
+      key: display
+      argument: backend
+      native: -display
+      description: Display backend, such as gtk, sdl, cocoa, curses, none, or vnc.
+    - flag: --headless
+      key: headless
+      argument: false
+      native: -nographic
+      description: Disable graphical display and use the terminal.
+    - flag: --serial
+      key: serial
+      argument: target
+      native: -serial
+      description: Serial target, such as mon:stdio or file:serial.log.
+    - flag: --monitor
+      key: monitor
+      argument: false
+      native: template
+      template:
+      - -monitor
+      - stdio
+      description: Open the QEMU monitor on stdio.
+    - flag: --qmp
+      key: qmp
+      argument: target
+      native: -qmp
+      description: QMP monitor target.
+    - flag: --paused
+      key: paused
+      argument: false
+      native: -S
+      description: Start paused for debugger or monitor attachment.
+    - flag: --gdb
+      key: gdb
+      argument: false
+      native: -s
+      description: Open the default GDB stub on tcp::1234.
+  subcommands:
+  - name: run
+    usage: run --arch <arch> [options]
+    description: Start a VM from explicitly supplied options.
+    positional: none
+  - name: boot
+    usage: boot <image> --arch <arch> [options]
+    description: Boot a disk image with sane drive defaults.
+    positional: single_image
+    required:
+    - disk
+  - name: install
+    usage: install <iso> --disk <image> --arch <arch> [options]
+    description: Boot an installer ISO with a target disk attached.
+    positional: single_image
+    value_key: cdrom
+    set:
+      boot: d
+    required:
+    - disk
+    - cdrom
+  - name: monitor
+    usage: monitor --arch <arch> [options]
+    description: Start a VM with the QEMU monitor attached to stdio.
+    positional: none
+    set:
+      monitor: true
+  - name: raw
+    usage: raw --arch <arch> <native-args...>
+    description: Run the selected qemu-system architecture binary directly.
+    positional: raw

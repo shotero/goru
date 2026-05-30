@@ -38,6 +38,7 @@ Each tool should keep its plugin, spec, examples, and other tool-specific files 
 ./goru run rsync copy ./src ./backup --archive
 ./goru run ssh connect example.com --user deploy
 ./goru run tshark read capture.pcap --display-filter http
+./goru run qemu boot vm.qcow2 --arch aarch64 --memory 2G
 ```
 
 All wrapper commands accept `--yaml`:
@@ -134,6 +135,18 @@ tshark is exposed as packet capture and inspection workflows:
 ./goru run tshark interfaces
 ./goru run tshark reports fields
 ./goru run tshark raw -h
+```
+
+## QEMU Subcommands
+
+QEMU system emulators are exposed as one `qemu` tool. Select the native `qemu-system-<arch>` binary with `--arch`:
+
+```sh
+./goru run qemu boot vm.qcow2 --arch x86_64 --memory 4G --cpus 4
+./goru run qemu install debian.iso --disk vm.qcow2 --arch aarch64 --accel hvf
+./goru run qemu run --arch riscv64 --machine virt --kernel Image --initrd rootfs.cpio --append 'console=ttyS0' --headless
+./goru run qemu monitor --arch x86_64 --disk vm.qcow2
+./goru run qemu raw --arch x86_64 -m 2G -drive file=vm.qcow2,if=virtio
 ```
 
 ## Spec Validation
