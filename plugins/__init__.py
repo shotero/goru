@@ -1,5 +1,7 @@
 """Tool plugin registry for goru."""
 
+from tools.gcc.plugin import PLUGIN as GCC
+from tools.node.plugin import PLUGIN as NODE
 from tools.rsync.plugin import PLUGIN as RSYNC
 from tools.nmap.plugin import PLUGIN as NMAP
 from tools.qemu.plugin import PLUGIN as QEMU
@@ -9,6 +11,8 @@ from tools.tshark.plugin import PLUGIN as TSHARK
 
 
 REGISTRY = {
+    GCC.name: GCC,
+    NODE.name: NODE,
     SSH.name: SSH,
     NMAP.name: NMAP,
     QEMU.name: QEMU,

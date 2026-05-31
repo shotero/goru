@@ -1,0 +1,431 @@
+$schema: ../../spec.schema.json
+schema_version: 1
+tool:
+  name: gcc
+  binary: gcc
+  summary: Standardized GCC-compatible compiler wrapper for preprocessing, compiling, assembling, linking, and diagnostics.
+  raw_help_command:
+  - --help
+native:
+  usage:
+  - gcc [options] file...
+  options:
+  - flag: -E
+    argument: false
+    description: Run only the preprocessor.
+  - flag: -S
+    argument: false
+    description: Compile only and emit assembly.
+  - flag: -c
+    argument: false
+    description: Compile or assemble source files without linking.
+  - flag: -fsyntax-only
+    argument: false
+    description: Check code for syntax and semantic errors without output.
+  - flag: -shared
+    argument: false
+    description: Produce a shared library.
+  - flag: -o
+    argument: file
+    description: Write output to a file.
+  - flag: -x
+    argument: language
+    description: Treat subsequent input files as this language.
+  - flag: -std=
+    argument: standard
+    description: Compile for this language standard.
+  - flag: --target
+    argument: triple
+    description: Generate code for a target triple.
+  - flag: -O
+    argument: level
+    description: Optimization level.
+  - flag: -g
+    argument: false
+    description: Generate debug information.
+  - flag: -Wall
+    argument: false
+    description: Enable common warnings.
+  - flag: -Wextra
+    argument: false
+    description: Enable extra warnings.
+  - flag: -Werror
+    argument: false
+    description: Treat warnings as errors.
+  - flag: -W
+    argument: warning
+    description: Enable a warning class.
+  - flag: -w
+    argument: false
+    description: Suppress warnings.
+  - flag: -pedantic
+    argument: false
+    description: Warn on language extensions.
+  - flag: -I
+    argument: dir
+    description: Add a user include directory.
+  - flag: -isystem
+    argument: dir
+    description: Add a system include directory.
+  - flag: -D
+    argument: macro
+    description: Define a macro.
+  - flag: -U
+    argument: macro
+    description: Undefine a macro.
+  - flag: -include
+    argument: file
+    description: Include a file before source files.
+  - flag: -L
+    argument: dir
+    description: Add a library search directory.
+  - flag: -l
+    argument: library
+    description: Link with a library.
+  - flag: -pthread
+    argument: false
+    description: Support POSIX threads.
+  - flag: -static
+    argument: false
+    description: Link statically.
+  - flag: -Wl,
+    argument: arg
+    description: Pass an argument to the linker.
+  - flag: -Wa,
+    argument: arg
+    description: Pass an argument to the assembler.
+  - flag: -Wp,
+    argument: arg
+    description: Pass an argument to the preprocessor.
+  - flag: -M
+    argument: false
+    description: Emit dependencies and imply preprocessing.
+  - flag: -MM
+    argument: false
+    description: Emit dependencies excluding system headers.
+  - flag: -MD
+    argument: false
+    description: Emit dependencies as a side effect.
+  - flag: -MMD
+    argument: false
+    description: Emit user-header dependencies as a side effect.
+  - flag: -MF
+    argument: file
+    description: Write dependencies to a file.
+  - flag: -MT
+    argument: target
+    description: Set dependency target name.
+  - flag: -v
+    argument: false
+    description: Show commands and verbose output.
+  - flag: -###
+    argument: false
+    description: Print commands without running them.
+  - flag: --version
+    argument: false
+    description: Print version information.
+  option_groups:
+  - name: Build stages
+    summary: Select preprocessing, syntax checking, compiling, assembly output, object output, shared libraries, and final linking.
+    flags:
+    - -E
+    - -S
+    - -c
+    - -fsyntax-only
+    - -shared
+    - -o
+  - name: Language and target
+    summary: Select input language, language standard, target triple, optimization, and debug information.
+    flags:
+    - -x
+    - -std=
+    - --target
+    - -O
+    - -g
+  - name: Diagnostics
+    summary: Control warnings, pedantic diagnostics, verbose output, and dry-run command printing.
+    flags:
+    - -Wall
+    - -Wextra
+    - -Werror
+    - -W
+    - -w
+    - -pedantic
+    - -v
+    - -###
+  - name: Includes and macros
+    summary: Add include directories and preprocessor definitions.
+    flags:
+    - -I
+    - -isystem
+    - -D
+    - -U
+    - -include
+  - name: Linking and dependencies
+    summary: Add library paths, libraries, linker arguments, threading, static linking, and dependency files.
+    flags:
+    - -L
+    - -l
+    - -pthread
+    - -static
+    - -Wl,
+    - -M
+    - -MM
+    - -MD
+    - -MMD
+    - -MF
+    - -MT
+wrapper:
+  usage:
+  - goru run gcc build <source...> [options] [-- native-gcc-options...]
+  - goru run gcc compile <source...> [options] [-- native-gcc-options...]
+  - goru run gcc preprocess <source...> [options] [-- native-gcc-options...]
+  - goru run gcc assembly <source...> [options] [-- native-gcc-options...]
+  - goru run gcc syntax <source...> [options] [-- native-gcc-options...]
+  - goru run gcc shared <source...> [options] [-- native-gcc-options...]
+  - goru run gcc raw <native-args...>
+  option_groups:
+  - name: Output
+    options:
+    - flag: --output
+      key: output
+      argument: file
+      native: -o
+      description: Write compiler output to a file.
+    - flag: --language
+      key: language
+      argument: language
+      native: -x
+      description: Treat subsequent inputs as this language.
+    - flag: --standard
+      key: standard
+      argument: standard
+      native: -std=
+      template:
+      - -std={value}
+      description: Compile for this language standard, such as c11 or gnu17.
+    - flag: --target
+      key: target
+      argument: triple
+      native: --target
+      description: Generate code for a target triple.
+  - name: Optimization and debug
+    options:
+    - flag: --optimize
+      key: optimize
+      argument: level
+      native: -O
+      template:
+      - -O{value}
+      description: Optimization level, such as 0, 1, 2, 3, s, z, or fast.
+    - flag: --debug
+      key: debug
+      argument: false
+      native: -g
+      description: Generate debug information.
+  - name: Diagnostics
+    options:
+    - flag: --warnings
+      key: warnings
+      argument: false
+      native: -Wall
+      description: Enable common warnings.
+    - flag: --extra-warnings
+      key: extra_warnings
+      argument: false
+      native: -Wextra
+      description: Enable extra warnings.
+    - flag: --warnings-as-errors
+      key: warnings_as_errors
+      argument: false
+      native: -Werror
+      description: Treat warnings as errors.
+    - flag: --warning
+      key: warning
+      argument: warning
+      repeatable: true
+      native: -W
+      template:
+      - -W{value}
+      description: Enable a warning class, such as conversion or shadow. May be repeated.
+    - flag: --no-warnings
+      key: no_warnings
+      argument: false
+      native: -w
+      description: Suppress warnings.
+    - flag: --pedantic
+      key: pedantic
+      argument: false
+      native: -pedantic
+      description: Warn on language extensions.
+    - flag: --verbose
+      key: verbose
+      argument: false
+      native: -v
+      description: Show commands and verbose output.
+    - flag: --dry-run
+      key: dry_run
+      argument: false
+      native: -###
+      description: Print commands without running them.
+  - name: Includes and macros
+    options:
+    - flag: --include-dir
+      key: include_dir
+      argument: dir
+      repeatable: true
+      native: -I
+      template:
+      - -I{value}
+      description: Add a user include directory. May be repeated.
+    - flag: --system-include-dir
+      key: system_include_dir
+      argument: dir
+      repeatable: true
+      native: -isystem
+      description: Add a system include directory. May be repeated.
+    - flag: --define
+      key: define
+      argument: macro
+      repeatable: true
+      native: -D
+      template:
+      - -D{value}
+      description: Define a macro, optionally with =value. May be repeated.
+    - flag: --undefine
+      key: undefine
+      argument: macro
+      repeatable: true
+      native: -U
+      template:
+      - -U{value}
+      description: Undefine a macro. May be repeated.
+    - flag: --include
+      key: include
+      argument: file
+      repeatable: true
+      native: -include
+      description: Include a file before source files. May be repeated.
+  - name: Link
+    options:
+    - flag: --library-dir
+      key: library_dir
+      argument: dir
+      repeatable: true
+      native: -L
+      template:
+      - -L{value}
+      description: Add a library search directory. May be repeated.
+    - flag: --library
+      key: library
+      argument: library
+      repeatable: true
+      native: -l
+      template:
+      - -l{value}
+      description: Link with a library, without the lib prefix or extension. May be repeated.
+    - flag: --linker-arg
+      key: linker_arg
+      argument: arg
+      repeatable: true
+      native: -Wl,
+      template:
+      - -Wl,{value}
+      description: Pass an argument to the linker. May be repeated.
+    - flag: --assembler-arg
+      key: assembler_arg
+      argument: arg
+      repeatable: true
+      native: -Wa,
+      template:
+      - -Wa,{value}
+      description: Pass an argument to the assembler. May be repeated.
+    - flag: --preprocessor-arg
+      key: preprocessor_arg
+      argument: arg
+      repeatable: true
+      native: -Wp,
+      template:
+      - -Wp,{value}
+      description: Pass an argument to the preprocessor. May be repeated.
+    - flag: --pthread
+      key: pthread
+      argument: false
+      native: -pthread
+      description: Support POSIX threads in compilation and linking.
+    - flag: --static
+      key: static
+      argument: false
+      native: -static
+      description: Link statically.
+  - name: Dependencies
+    options:
+    - flag: --deps
+      key: deps
+      argument: false
+      native: -M
+      description: Emit dependencies and imply preprocessing.
+    - flag: --user-deps
+      key: user_deps
+      argument: false
+      native: -MM
+      description: Emit dependencies excluding system headers.
+    - flag: --deps-side-effect
+      key: deps_side_effect
+      argument: false
+      native: -MD
+      description: Emit dependencies as a side effect.
+    - flag: --user-deps-side-effect
+      key: user_deps_side_effect
+      argument: false
+      native: -MMD
+      description: Emit user-header dependencies as a side effect.
+    - flag: --deps-output
+      key: deps_output
+      argument: file
+      native: -MF
+      description: Write dependencies to a file.
+    - flag: --deps-target
+      key: deps_target
+      argument: target
+      native: -MT
+      description: Set dependency target name.
+  subcommands:
+  - name: build
+    usage: build <source...> [options]
+    description: Compile and link source files into a program.
+    positional: sources
+  - name: compile
+    usage: compile <source...> [options]
+    description: Compile or assemble sources into object files without linking.
+    positional: sources
+    native_args:
+    - -c
+  - name: preprocess
+    usage: preprocess <source...> [options]
+    description: Run only the preprocessor.
+    positional: sources
+    native_args:
+    - -E
+  - name: assembly
+    usage: assembly <source...> [options]
+    description: Compile sources and emit assembly.
+    positional: sources
+    native_args:
+    - -S
+  - name: syntax
+    usage: syntax <source...> [options]
+    description: Check syntax and semantics without producing output.
+    positional: sources
+    native_args:
+    - -fsyntax-only
+  - name: shared
+    usage: shared <source...> [options]
+    description: Build a shared library.
+    positional: sources
+    native_args:
+    - -shared
+  - name: raw
+    usage: raw <native-args...>
+    description: Run gcc directly with native arguments and no wrapper remapping.
+    positional: raw

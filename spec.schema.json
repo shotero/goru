@@ -171,7 +171,9 @@
             "single_value",
             "single_source",
             "single_image",
+            "script_args",
             "sources_destination",
+            "sources",
             "targets",
             "tar_paths"
           ]

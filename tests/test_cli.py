@@ -10,6 +10,8 @@ def run_cli(*args: str):
 def test_validate_specs_command() -> None:
     result = run_cli("validate-specs")
     assert result.exit_code == 0
+    assert "valid gcc tools/gcc/spec.yaml" in result.output
+    assert "valid node tools/node/spec.yaml" in result.output
     assert "valid ssh tools/ssh/spec.yaml" in result.output
     assert "valid rsync tools/rsync/spec.yaml" in result.output
     assert "valid tar tools/tar/spec.yaml" in result.output
@@ -91,3 +93,21 @@ def test_translate_native_nmap_to_wrapper() -> None:
     result = run_cli("translate", "nmap -sV -p 22,80 --open scanme.nmap.org")
     assert result.exit_code == 0
     assert result.output.strip() == "./goru run nmap service scanme.nmap.org --ports 22,80 --open"
+
+
+def test_translate_native_gcc_to_wrapper() -> None:
+    result = run_cli("translate", "gcc -c -O2 -std=c11 -Iinclude -DDEBUG=1 -Wall src/main.c")
+    assert result.exit_code == 0
+    assert (
+        result.output.strip()
+        == "./goru run gcc compile src/main.c --optimize 2 --standard c11 --include-dir include --define DEBUG=1 --warnings"
+    )
+
+
+def test_translate_native_node_to_wrapper() -> None:
+    result = run_cli("translate", "node -r dotenv/config --env-file=.env --watch app.js --port 3000")
+    assert result.exit_code == 0
+    assert (
+        result.output.strip()
+        == "./goru run node run --require dotenv/config --env-file .env --watch app.js --port 3000"
+    )

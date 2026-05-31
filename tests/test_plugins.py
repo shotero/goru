@@ -37,6 +37,62 @@ def test_tshark_fields_maps_to_native_args() -> None:
     ) == ["-r", "sample.pcap", "-T", "fields", "-e", "ip.src", "-e", "tcp.port", "-E", "header=y"]
 
 
+def test_gcc_compile_uses_spec_templates_for_compact_native_args() -> None:
+    plugin = REGISTRY["gcc"]
+    assert plugin.build_args(
+        [
+            "compile",
+            "src/main.c",
+            "--output",
+            "main.o",
+            "--standard",
+            "c11",
+            "--optimize",
+            "2",
+            "--include-dir",
+            "include",
+            "--define",
+            "DEBUG=1",
+            "--warnings",
+        ],
+        {},
+    ) == ["-c", "-o", "main.o", "-std=c11", "-O2", "-Wall", "-Iinclude", "-DDEBUG=1", "src/main.c"]
+
+
+def test_gcc_compile_requires_source() -> None:
+    plugin = REGISTRY["gcc"]
+    with pytest.raises(ValueError, match="gcc compile requires at least one source"):
+        plugin.build_args(["compile", "--output", "main.o"], {})
+
+
+def test_node_run_maps_options_before_script_args() -> None:
+    plugin = REGISTRY["node"]
+    assert plugin.build_args(
+        [
+            "run",
+            "--require",
+            "dotenv/config",
+            "--env-file",
+            ".env",
+            "--watch",
+            "--enable-source-maps",
+            "app.js",
+            "--port",
+            "3000",
+        ],
+        {},
+    ) == ["-r", "dotenv/config", "--env-file=.env", "--watch", "--enable-source-maps", "app.js", "--port", "3000"]
+
+
+def test_node_eval_uses_spec_template() -> None:
+    plugin = REGISTRY["node"]
+    assert plugin.build_args(["eval", "--input-type", "module", "console.log(import.meta.url)"], {}) == [
+        "--input-type=module",
+        "-e",
+        "console.log(import.meta.url)",
+    ]
+
+
 def test_qemu_boot_selects_arch_binary_and_maps_common_flags() -> None:
     plugin = REGISTRY["qemu"]
     assert plugin.build_command(
@@ -151,6 +207,48 @@ def test_tshark_translates_native_to_wrapper() -> None:
         "--display-filter",
         "http",
         "--details",
+    ]
+
+
+def test_gcc_translates_native_to_wrapper_from_spec_mappings() -> None:
+    plugin = REGISTRY["gcc"]
+    assert plugin.translate_native_args(["-c", "-O2", "-std=c11", "-Iinclude", "-DDEBUG=1", "-Wall", "src/main.c"]) == [
+        "compile",
+        "src/main.c",
+        "--optimize",
+        "2",
+        "--standard",
+        "c11",
+        "--include-dir",
+        "include",
+        "--define",
+        "DEBUG=1",
+        "--warnings",
+    ]
+
+
+def test_node_translates_native_to_wrapper_from_spec_mappings() -> None:
+    plugin = REGISTRY["node"]
+    assert plugin.translate_native_args(["-r", "dotenv/config", "--env-file=.env", "--watch", "app.js", "--port", "3000"]) == [
+        "run",
+        "--require",
+        "dotenv/config",
+        "--env-file",
+        ".env",
+        "--watch",
+        "app.js",
+        "--port",
+        "3000",
+    ]
+
+
+def test_node_translates_eval_subcommand_with_value() -> None:
+    plugin = REGISTRY["node"]
+    assert plugin.translate_native_args(["--input-type=module", "-e", "console.log(1)"]) == [
+        "eval",
+        "--input-type",
+        "module",
+        "console.log(1)",
     ]
 
 

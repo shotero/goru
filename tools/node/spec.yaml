@@ -1,0 +1,541 @@
+$schema: ../../spec.schema.json
+schema_version: 1
+tool:
+  name: node
+  binary: node
+  summary: Standardized Node.js runtime wrapper for scripts, eval, tests, inspection, and runtime diagnostics.
+  raw_help_command:
+  - --help
+native:
+  usage:
+  - node [options] [ script.js ] [arguments]
+  - node inspect [options] [ script.js | host:port ] [arguments]
+  options:
+  - flag: -e
+    argument: script
+    description: Evaluate JavaScript source.
+  - flag: --eval
+    argument: script
+    description: Evaluate JavaScript source.
+  - flag: -p
+    argument: script
+    description: Evaluate JavaScript source and print the result.
+  - flag: --print
+    argument: script
+    description: Evaluate JavaScript source and print the result.
+  - flag: -c
+    argument: false
+    description: Syntax-check a script without executing it.
+  - flag: --check
+    argument: false
+    description: Syntax-check a script without executing it.
+  - flag: -i
+    argument: false
+    description: Always enter the REPL.
+  - flag: --interactive
+    argument: false
+    description: Always enter the REPL.
+  - flag: --test
+    argument: false
+    description: Launch the test runner.
+  - flag: --run
+    argument: script
+    description: Run a package.json script.
+  - flag: -r
+    argument: module
+    description: Preload a CommonJS module.
+  - flag: --require
+    argument: module
+    description: Preload a CommonJS module.
+  - flag: --import
+    argument: module
+    description: Preload an ES module.
+  - flag: --loader
+    argument: module
+    description: Use a custom ES module loader.
+  - flag: --experimental-loader
+    argument: module
+    description: Use a custom ES module loader.
+  - flag: --env-file
+    argument: file
+    description: Load environment variables from a file.
+  - flag: --env-file-if-exists
+    argument: file
+    description: Load environment variables from a file if it exists.
+  - flag: --watch
+    argument: false
+    description: Run in watch mode.
+  - flag: --watch-path
+    argument: path
+    description: Path to watch.
+  - flag: --watch-preserve-output
+    argument: false
+    description: Preserve output when watch mode restarts.
+  - flag: --inspect
+    argument: host_port
+    description: Activate inspector on a host and port.
+  - flag: --inspect-brk
+    argument: host_port
+    description: Activate inspector and break at start.
+  - flag: --inspect-wait
+    argument: host_port
+    description: Activate inspector and wait for debugger attachment.
+  - flag: --inspect-port
+    argument: host_port
+    description: Set inspector host and port.
+  - flag: --enable-source-maps
+    argument: false
+    description: Enable source maps in stack traces.
+  - flag: --input-type
+    argument: type
+    description: Set module type for string input.
+  - flag: -C
+    argument: condition
+    description: Add a condition for conditional exports and imports.
+  - flag: --conditions
+    argument: condition
+    description: Add a condition for conditional exports and imports.
+  - flag: --no-warnings
+    argument: false
+    description: Silence process warnings.
+  - flag: --trace-warnings
+    argument: false
+    description: Show stack traces on warnings.
+  - flag: --trace-deprecation
+    argument: false
+    description: Show stack traces on deprecations.
+  - flag: --throw-deprecation
+    argument: false
+    description: Throw on deprecations.
+  - flag: --unhandled-rejections
+    argument: mode
+    description: Set unhandled rejection behavior.
+  - flag: --cpu-prof
+    argument: false
+    description: Start V8 CPU profiler.
+  - flag: --cpu-prof-dir
+    argument: dir
+    description: Directory for CPU profiles.
+  - flag: --heap-prof
+    argument: false
+    description: Start V8 heap profiler.
+  - flag: --heap-prof-dir
+    argument: dir
+    description: Directory for heap profiles.
+  - flag: --test-name-pattern
+    argument: pattern
+    description: Run tests whose name matches this pattern.
+  - flag: --test-reporter
+    argument: reporter
+    description: Select test reporter.
+  - flag: --test-timeout
+    argument: ms
+    description: Set test timeout.
+  - flag: --test-only
+    argument: false
+    description: Run tests marked only.
+  - flag: --test-concurrency
+    argument: count
+    description: Set test runner concurrency.
+  - flag: --permission
+    argument: false
+    description: Enable the permission system.
+  - flag: --allow-fs-read
+    argument: paths
+    description: Allow filesystem reads for matching paths.
+  - flag: --allow-fs-write
+    argument: paths
+    description: Allow filesystem writes for matching paths.
+  - flag: --allow-child-process
+    argument: false
+    description: Allow child process use with permissions.
+  - flag: --allow-worker
+    argument: false
+    description: Allow worker threads with permissions.
+  - flag: --max-old-space-size
+    argument: mb
+    description: Set V8 old-space heap limit.
+  - flag: --expose-gc
+    argument: false
+    description: Expose garbage collection extension.
+  - flag: --title
+    argument: title
+    description: Set process title.
+  - flag: --version
+    argument: false
+    description: Print Node.js version.
+  - flag: --help
+    argument: false
+    description: Print help.
+  option_groups:
+  - name: Execution
+    summary: Run scripts, evaluate code, check syntax, enter the REPL, inspect, test, and run package scripts.
+    flags:
+    - -e
+    - -p
+    - -c
+    - -i
+    - --test
+    - --run
+    - --inspect
+  - name: Module loading
+    summary: Preload CommonJS or ES modules, select loaders, input type, conditions, and environment files.
+    flags:
+    - -r
+    - --import
+    - --loader
+    - --input-type
+    - -C
+    - --env-file
+    - --env-file-if-exists
+  - name: Diagnostics
+    summary: Control warnings, deprecations, source maps, unhandled rejections, profilers, and heap settings.
+    flags:
+    - --enable-source-maps
+    - --no-warnings
+    - --trace-warnings
+    - --trace-deprecation
+    - --throw-deprecation
+    - --unhandled-rejections
+    - --cpu-prof
+    - --heap-prof
+    - --max-old-space-size
+  - name: Test runner and watch
+    summary: Configure test filtering, reporters, timeouts, concurrency, only mode, and watch mode.
+    flags:
+    - --test-name-pattern
+    - --test-reporter
+    - --test-timeout
+    - --test-only
+    - --test-concurrency
+    - --watch
+    - --watch-path
+    - --watch-preserve-output
+  - name: Permissions
+    summary: Enable permissions and allow selected filesystem, child process, and worker access.
+    flags:
+    - --permission
+    - --allow-fs-read
+    - --allow-fs-write
+    - --allow-child-process
+    - --allow-worker
+wrapper:
+  usage:
+  - goru run node run <script.js> [arguments...] [options]
+  - goru run node eval <code> [options]
+  - goru run node print <code> [options]
+  - goru run node check <script.js> [options]
+  - goru run node test [files...] [options]
+  - goru run node inspect <script.js|host:port> [arguments...] [options]
+  - goru run node package-script <name> [options]
+  - goru run node repl [options]
+  - goru run node raw <native-args...>
+  option_groups:
+  - name: Loading
+    options:
+    - flag: --require
+      key: require
+      argument: module
+      repeatable: true
+      native: -r
+      description: Preload a CommonJS module. May be repeated.
+    - flag: --import
+      key: import
+      argument: module
+      repeatable: true
+      native: --import
+      template:
+      - --import={value}
+      description: Preload an ES module. May be repeated.
+    - flag: --loader
+      key: loader
+      argument: module
+      native: --loader
+      description: Use a custom ES module loader.
+    - flag: --env-file
+      key: env_file
+      argument: file
+      repeatable: true
+      native: --env-file
+      template:
+      - --env-file={value}
+      description: Load environment variables from a file. May be repeated.
+    - flag: --env-file-if-exists
+      key: env_file_if_exists
+      argument: file
+      repeatable: true
+      native: --env-file-if-exists
+      template:
+      - --env-file-if-exists={value}
+      description: Load environment variables from a file if it exists. May be repeated.
+    - flag: --input-type
+      key: input_type
+      argument: type
+      native: --input-type
+      template:
+      - --input-type={value}
+      description: Set module type for eval, print, or stdin input.
+    - flag: --condition
+      key: condition
+      argument: condition
+      repeatable: true
+      native: -C
+      description: Add a conditional exports/imports condition. May be repeated.
+  - name: Debug
+    options:
+    - flag: --inspect
+      key: inspect
+      argument: host:port
+      native: --inspect
+      template:
+      - --inspect={value}
+      description: Activate inspector on host:port.
+    - flag: --inspect-break
+      key: inspect_break
+      argument: host:port
+      native: --inspect-brk
+      template:
+      - --inspect-brk={value}
+      description: Activate inspector and break at start.
+    - flag: --inspect-wait
+      key: inspect_wait
+      argument: host:port
+      native: --inspect-wait
+      template:
+      - --inspect-wait={value}
+      description: Activate inspector and wait for debugger attachment.
+    - flag: --inspect-port
+      key: inspect_port
+      argument: host:port
+      native: --inspect-port
+      template:
+      - --inspect-port={value}
+      description: Set inspector host and port.
+  - name: Runtime
+    options:
+    - flag: --watch
+      key: watch
+      argument: false
+      native: --watch
+      description: Run in watch mode.
+    - flag: --watch-path
+      key: watch_path
+      argument: path
+      repeatable: true
+      native: --watch-path
+      template:
+      - --watch-path={value}
+      description: Add a watch path. May be repeated.
+    - flag: --watch-preserve-output
+      key: watch_preserve_output
+      argument: false
+      native: --watch-preserve-output
+      description: Preserve output on watch restarts.
+    - flag: --enable-source-maps
+      key: enable_source_maps
+      argument: false
+      native: --enable-source-maps
+      description: Enable source maps in stack traces.
+    - flag: --title
+      key: title
+      argument: title
+      native: --title
+      template:
+      - --title={value}
+      description: Set process title.
+  - name: Diagnostics
+    options:
+    - flag: --no-warnings
+      key: no_warnings
+      argument: false
+      native: --no-warnings
+      description: Silence process warnings.
+    - flag: --trace-warnings
+      key: trace_warnings
+      argument: false
+      native: --trace-warnings
+      description: Show stack traces on warnings.
+    - flag: --trace-deprecation
+      key: trace_deprecation
+      argument: false
+      native: --trace-deprecation
+      description: Show stack traces on deprecations.
+    - flag: --throw-deprecation
+      key: throw_deprecation
+      argument: false
+      native: --throw-deprecation
+      description: Throw on deprecations.
+    - flag: --unhandled-rejections
+      key: unhandled_rejections
+      argument: mode
+      native: --unhandled-rejections
+      template:
+      - --unhandled-rejections={value}
+      description: Set unhandled rejection behavior.
+    - flag: --cpu-prof
+      key: cpu_prof
+      argument: false
+      native: --cpu-prof
+      description: Start V8 CPU profiler.
+    - flag: --cpu-prof-dir
+      key: cpu_prof_dir
+      argument: dir
+      native: --cpu-prof-dir
+      template:
+      - --cpu-prof-dir={value}
+      description: Directory for CPU profiles.
+    - flag: --heap-prof
+      key: heap_prof
+      argument: false
+      native: --heap-prof
+      description: Start V8 heap profiler.
+    - flag: --heap-prof-dir
+      key: heap_prof_dir
+      argument: dir
+      native: --heap-prof-dir
+      template:
+      - --heap-prof-dir={value}
+      description: Directory for heap profiles.
+    - flag: --max-old-space-size
+      key: max_old_space_size
+      argument: mb
+      native: --max-old-space-size
+      template:
+      - --max-old-space-size={value}
+      description: Set V8 old-space heap limit.
+    - flag: --expose-gc
+      key: expose_gc
+      argument: false
+      native: --expose-gc
+      description: Expose garbage collection extension.
+  - name: Test runner
+    options:
+    - flag: --test-name-pattern
+      key: test_name_pattern
+      argument: pattern
+      native: --test-name-pattern
+      template:
+      - --test-name-pattern={value}
+      description: Run tests whose name matches this pattern.
+    - flag: --test-reporter
+      key: test_reporter
+      argument: reporter
+      native: --test-reporter
+      template:
+      - --test-reporter={value}
+      description: Select test reporter.
+    - flag: --test-timeout
+      key: test_timeout
+      argument: ms
+      native: --test-timeout
+      template:
+      - --test-timeout={value}
+      description: Set test timeout.
+    - flag: --test-only
+      key: test_only
+      argument: false
+      native: --test-only
+      description: Run tests marked only.
+    - flag: --test-concurrency
+      key: test_concurrency
+      argument: count
+      native: --test-concurrency
+      template:
+      - --test-concurrency={value}
+      description: Set test runner concurrency.
+  - name: Permissions
+    options:
+    - flag: --permission
+      key: permission
+      argument: false
+      native: --permission
+      description: Enable permission checks.
+    - flag: --allow-read
+      key: allow_read
+      argument: paths
+      repeatable: true
+      native: --allow-fs-read
+      template:
+      - --allow-fs-read={value}
+      description: Allow filesystem reads for paths. May be repeated.
+    - flag: --allow-write
+      key: allow_write
+      argument: paths
+      repeatable: true
+      native: --allow-fs-write
+      template:
+      - --allow-fs-write={value}
+      description: Allow filesystem writes for paths. May be repeated.
+    - flag: --allow-child-process
+      key: allow_child_process
+      argument: false
+      native: --allow-child-process
+      description: Allow child process use with permissions.
+    - flag: --allow-worker
+      key: allow_worker
+      argument: false
+      native: --allow-worker
+      description: Allow worker threads with permissions.
+  subcommands:
+  - name: run
+    usage: run <script.js> [arguments...] [options]
+    description: Run a JavaScript entry script with optional script arguments.
+    positional: script_args
+  - name: check
+    usage: check <script.js> [options]
+    description: Syntax-check a script without executing it.
+    positional: script_args
+    native_args:
+    - -c
+  - name: eval
+    usage: eval <code> [options]
+    description: Evaluate JavaScript source.
+    positional: single_value
+    value_key: code
+    required:
+    - code
+    native_args:
+    - -e
+    - '{code}'
+  - name: print
+    usage: print <code> [options]
+    description: Evaluate JavaScript source and print the result.
+    positional: single_value
+    value_key: code
+    required:
+    - code
+    native_args:
+    - -p
+    - '{code}'
+  - name: repl
+    usage: repl [options]
+    description: Start the Node.js REPL.
+    positional: none
+    native_args:
+    - -i
+  - name: test
+    usage: test [files...] [options]
+    description: Run the Node.js test runner.
+    positional: sources
+    native_args:
+    - --test
+  - name: inspect
+    usage: inspect <script.js|host:port> [arguments...] [options]
+    description: Run the Node.js inspector command.
+    positional: script_args
+    native_args:
+    - inspect
+  - name: package-script
+    usage: package-script <name> [options]
+    description: Run a package.json script through Node.js.
+    positional: single_value
+    value_key: package_script
+    required:
+    - package_script
+    native_args:
+    - --run
+    - '{package_script}'
+  - name: raw
+    usage: raw <native-args...>
+    description: Run node directly with native arguments and no wrapper remapping.
+    positional: raw
